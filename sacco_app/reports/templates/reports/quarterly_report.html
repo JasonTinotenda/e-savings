@@ -1,0 +1,10 @@
+<h1>Quarterly Report</h1>
+<p>Total Deposit: {{ total_deposit }}</p>
+<p>Total Withdrawal: {{ total_withdrawal }}</p>
+<ul>
+  {% for transaction in transactions %}
+    <li>{{ transaction.transaction_type }} - {{ transaction.amount }}</li>
+  {% empty %}
+    <li>No transactions.</li>
+  {% endfor %}
+</ul>
