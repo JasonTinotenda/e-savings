@@ -8,7 +8,7 @@ class CustomUserAdmin(UserAdmin):
     )
     
     list_display = ('email', 'first_name', 'last_name',
-                     'role', 'is_active', 'is_deactivated', 'is_staff', 'is_superuser')
+                     'role', 'is_active', 'is_deactivated', 'is_staff')
     search_fields = ('email', 'first_name', 'last_name', 'role')
     ordering = ('email',)
 

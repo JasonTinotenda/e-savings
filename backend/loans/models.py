@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 class LoanApplication(models.Model):
-    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     application_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')], default='Pending')
@@ -14,7 +14,7 @@ class LoanApproval(models.Model):
     loan_application = models.OneToOneField(LoanApplication, on_delete=models.CASCADE, related_name='approval')
     approved_amount = models.DecimalField(max_digits=10, decimal_places=2)
     approval_date = models.DateField(auto_now_add=True)
-    approved_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='approvals')
+    approved_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='approvals')
     
     def __str__(self):
         return f"Loan Approval {self.id} for Application {self.loan_application.id}"
