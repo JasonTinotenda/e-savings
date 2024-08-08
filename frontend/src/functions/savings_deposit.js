@@ -15,9 +15,10 @@ const WithdrawFunds = ({ accountNumber }) => {
     })
     .then(response => {
       console.log('Withdrawal successful:', response.data);
+      setAmount('');
     })
     .catch(error => {
-      console.error('There was an error withdrawing the funds!', error);
+      console.error('There was an error withdrawing funds!', error);
     });
   };
 

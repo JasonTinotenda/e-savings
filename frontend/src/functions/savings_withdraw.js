@@ -1,12 +1,12 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 
-const DepositFunds = ({ accountNumber }) => {
+const WithdrawFunds = ({ accountNumber }) => {
   const [amount, setAmount] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`http://localhost:8000/api/savings/deposit/${accountNumber}/`, {
+    axios.post(`http://localhost:8000/api/transacctions/withdraw/${accountNumber}/`, {
       amount: amount,
     }, {
       headers: {
@@ -14,19 +14,19 @@ const DepositFunds = ({ accountNumber }) => {
       }
     })
     .then(response => {
-      console.log('Deposit successful:', response.data);
+      console.log('Withdrawal successful:', response.data);
     })
     .catch(error => {
-      console.error('There was an error depositing the funds!', error);
+      console.error('There was an error withdrawing the funds!', error);
     });
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" required />
-      <button type="submit">Deposit</button>
+      <button type="submit">Withdraw</button>
     </form>
   );
 };
 
-export default DepositFunds;
+export default WithdrawFunds;

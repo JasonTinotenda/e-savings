@@ -18,12 +18,10 @@ const AccountBalance = ({ accountNumber }) => {
     });
   }, [accountNumber]);
 
-  if (balance === null) return <div>Loading...</div>;
-
   return (
     <div>
-      <h1>Account Balance</h1>
-      <p>Balance: {balance}</p>
+      <h2>Account Balance</h2>
+      <p>Balance: {balance !== null ? `${balance} USD` : 'Loading...'}</p>
     </div>
   );
 };

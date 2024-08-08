@@ -1,26 +1,24 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
-const RegisterMember = () => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const history = useHistory();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8000/api/members/register/', {
+    axios.post('http://localhost:8000/api/auth/login/', {
       username: username,
-      password: password,
-      email: email,
+      password: password
     })
     .then(response => {
-      console.log('Member registration successful:', response.data);
-      setUsername('');
-      setPassword('');
-      setEmail('');
+      localStorage.setItem('token', response.data.token);
+      history.push('/transactions');  // Redirect to transactions page
     })
     .catch(error => {
-      console.error('There was an error registering the member!', error);
+      console.error('There was an error logging in!', error);
     });
   };
 
@@ -28,10 +26,9 @@ const RegisterMember = () => {
     <form onSubmit={handleSubmit}>
       <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" required />
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-      <button type="submit">Register</button>
+      <button type="submit">Login</button>
     </form>
   );
 };
 
-export default RegisterMember;
+export default Login;
