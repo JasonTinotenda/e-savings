@@ -30,13 +30,14 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     objects = UserAccountManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS =['name']
+    REQUIRED_FIELDS =['first_name']
+    REQUIRED_FIELDS =['last_name']
 
     def first_name(self):
-        return self.name
+        return self.first_name
     
     def last_name(self):
-        return self.name
+        return self.last_name
     
     def __str__(self):
         return self.email

@@ -8,7 +8,7 @@ class LoanApplication(models.Model):
     status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')], default='Pending')
     
     def __str__(self):
-        return f"Loan Application {self.id} by {self.applicant.username}"
+        return f"Loan Application {self.id} by {self.applicant.name}"
 
 class LoanApproval(models.Model):
     loan_application = models.OneToOneField(LoanApplication, on_delete=models.CASCADE, related_name='approval')

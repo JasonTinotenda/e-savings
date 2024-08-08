@@ -16,17 +16,17 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/loans/application" component={LoanApplication} />
-        <Route path="/loans/tracking" component={LoanTracking} />
-        <Route path="/loans/repayment/:loanId" component={LoanRepayment} />
-        <Route path="/members/register" component={RegisterMember} />
-        <Route path="/members/profile/:memberId" component={MemberProfile} />
-        <Route path="/reports/monthly" component={MonthlyReport} />
-        <Route path="/reports/quarterly" component={QuarterlyReport} />
-        <Route path="/reports/annual" component={AnnualReport} />
-        <Route path="/savings/deposit/:accountNumber" component={DepositFunds} />
-        <Route path="/savings/withdraw/:accountNumber" component={WithdrawFunds} />
-        <Route path="/savings/balance/:accountNumber" component={AccountBalance} />
+        <Route path="/loans/application" element={<LoanApplication/>} />
+        <Route path="/loans/tracking" element={<LoanTracking/>} />
+        <Route path="/loans/repayment/:loanId" element={<LoanRepayment/>} />
+        <Route path="/members/register" element={<RegisterMember/>} />
+        <Route path="/members/profile/:memberId" element={<MemberProfile/>} />
+        <Route path="/reports/monthly" element={<MonthlyReport/>} />
+        <Route path="/reports/quarterly" element={<QuarterlyReport/>} />
+        <Route path="/reports/annual" element={<AnnualReport/>} />
+        <Route path="/savings/deposit/:accountNumber" element={<DepositFunds/>} />
+        <Route path="/savings/withdraw/:accountNumber" element={<WithdrawFunds/>} />
+        <Route path="/savings/balance/:accountNumber" element={<AccountBalance/>} />
       </Routes>
     </Router>
   );
