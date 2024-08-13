@@ -12,23 +12,45 @@ import DepositFunds from './functions/savings_deposit';
 import WithdrawFunds from './functions/savings_withdraw';
 import AccountBalance from './functions/account_balance';
 
+import Home from './containers/Home';
+import Login from './containers/Login';
+import Activate from './containers/Activate';
+import Signup from './containers/Signup';
+import ResetPassword from './containers/ResetPassword';
+import ResetPasswordConfirm from './containers/ResetPasswordConfirm';
+import Facebook from './containers/Facebook'
+import Google from './containers/Google'
+
+import { Provider } from 'react-redux';
+import store from './store';
+
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/loans/application" element={<LoanApplication/>} />
-        <Route path="/loans/tracking" element={<LoanTracking/>} />
-        <Route path="/loans/repayment/:loanId" element={<LoanRepayment/>} />
-        <Route path="/members/register" element={<RegisterMember/>} />
-        <Route path="/members/profile/:memberId" element={<MemberProfile/>} />
-        <Route path="/reports/monthly" element={<MonthlyReport/>} />
-        <Route path="/reports/quarterly" element={<QuarterlyReport/>} />
-        <Route path="/reports/annual" element={<AnnualReport/>} />
-        <Route path="/savings/deposit/:accountNumber" element={<DepositFunds/>} />
-        <Route path="/savings/withdraw/:accountNumber" element={<WithdrawFunds/>} />
-        <Route path="/savings/balance/:accountNumber" element={<AccountBalance/>} />
-      </Routes>
-    </Router>
+    <Provider store={store}>
+      <Router>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/signup" element={<Signup />} />
+            <Route exact path="/facebook" element={<Facebook />} />
+            <Route exact path="/google" element={<Google />} />
+            <Route exact path="/reset-password" element={<ResetPassword />} />
+            <Route exact path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfirm />} />
+            <Route exact path="/activate/:uid/:token" element={<Activate />} />
+            <Route exact path="/loans/application" element={<LoanApplication/>} />
+            <Route exact path="/loans/tracking" element={<LoanTracking/>} />
+            <Route exact path="/loans/repayment/:loanId" element={<LoanRepayment/>} />
+            <Route exact path="/members/register" element={<RegisterMember/>} />
+            <Route exact path="/members/profile/:memberId" element={<MemberProfile/>} />
+            <Route exact path="/reports/monthly" element={<MonthlyReport/>} />
+            <Route exact path="/reports/quarterly" element={<QuarterlyReport/>} />
+            <Route exact path="/reports/annual" element={<AnnualReport/>} />
+            <Route exact path="/savings/deposit/:accountNumber" element={<DepositFunds/>} />
+            <Route exact path="/savings/withdraw/:accountNumber" element={<WithdrawFunds/>} />
+            <Route exact path="/savings/balance/:accountNumber" element={<AccountBalance/>} />
+          </Routes>
+        </Router>
+      </Provider>
   );
 };
 

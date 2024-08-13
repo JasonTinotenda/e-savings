@@ -1,7 +1,0 @@
-<h1>Loan Repayment</h1>
-<p>Loan Amount: {{ loan.loan_amount }}</p>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Repay</button>
-</form>

@@ -1,8 +1,0 @@
-<h1>Loan Tracking</h1>
-<ul>
-{% for loan in loans %}
-  <li>Loan ID: {{ loan.id }}, Status: {{ loan.status }}</li>
-{% empty %}
-  <li>No loans to display.</li>
-{% endfor %}
-</ul>
