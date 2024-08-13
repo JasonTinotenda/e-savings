@@ -1,158 +1,120 @@
-from django.shortcuts import render
-
-# Create your views here.
+from requests import Response
 from rest_framework.views import APIView
-from rest_framework.response import Response
+from .models import Account, AccountTransaction, Person
+from .serializers import AccountSerializer, AccountTransactionSerializer, PersonSerializer
 from rest_framework import status
 from rest_framework import permissions
-from .models import Person, Account, AccountTransaction
-from .serializers import PersonSerializer, AccountSerializer, AccountTransactionSerializer
+from rest_framework.response import Response
 
-class PersonListCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+class PersonApiView(APIView):
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
         persons = Person.objects.all()
         serializer = PersonSerializer(persons, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def post(self, request, *args, **kwargs):
         serializer = PersonSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class PersonDetailView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self, pk):
+    
+    def put(self, request, *args, **kwargs):
+        person_id = kwargs.get('pk')
         try:
-            return Person.objects.get(pk=pk)
+            person = Person.objects.get(pk=person_id)
         except Person.DoesNotExist:
-            return None
+            return Response({'error': 'Person not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, pk, *args, **kwargs):
-        person = self.get_object(pk)
-        if person is None:
-            return Response({"error": "Person not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = PersonSerializer(person)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def put(self, request, pk, *args, **kwargs):
-        person = self.get_object(pk)
-        if person is None:
-            return Response({"error": "Person not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PersonSerializer(person, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        person_id = kwargs.get('pk')
+        try:
+            person = Person.objects.get(pk=person_id)
+            person.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Person.DoesNotExist:
+            return Response({'error': 'Person not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self, request, pk, *args, **kwargs):
-        person = self.get_object(pk)
-        if person is None:
-            return Response({"error": "Person not found"}, status=status.HTTP_404_NOT_FOUND)
-        person.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class AccountListCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+class AccountApiView(APIView):
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
         accounts = Account.objects.all()
         serializer = AccountSerializer(accounts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def post(self, request, *args, **kwargs):
         serializer = AccountSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AccountDetailView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self, pk):
+    
+    def put(self, request, *args, **kwargs):
+        account_id = kwargs.get('pk')
         try:
-            return Account.objects.get(pk=pk)
+            account = Account.objects.get(pk=account_id)
         except Account.DoesNotExist:
-            return None
+            return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, pk, *args, **kwargs):
-        account = self.get_object(pk)
-        if account is None:
-            return Response({"error": "Account not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = AccountSerializer(account)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def put(self, request, pk, *args, **kwargs):
-        account = self.get_object(pk)
-        if account is None:
-            return Response({"error": "Account not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = AccountSerializer(account, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        account_id = kwargs.get('pk')
+        try:
+            account = Account.objects.get(pk=account_id)
+            account.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Account.DoesNotExist:
+            return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self, request, pk, *args, **kwargs):
-        account = self.get_object(pk)
-        if account is None:
-            return Response({"error": "Account not found"}, status=status.HTTP_404_NOT_FOUND)
-        account.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-class AccountTransactionListCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+class AccountTransactionApiView(APIView):
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
         transactions = AccountTransaction.objects.all()
         serializer = AccountTransactionSerializer(transactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def post(self, request, *args, **kwargs):
         serializer = AccountTransactionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AccountTransactionDetailView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self, pk):
+    
+    def put(self, request, *args, **kwargs):
+        transaction_id = kwargs.get('pk')
         try:
-            return AccountTransaction.objects.get(pk=pk)
+            transaction = AccountTransaction.objects.get(pk=transaction_id)
         except AccountTransaction.DoesNotExist:
-            return None
+            return Response({'error': 'Transaction not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return Response({"error": "Transaction not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = AccountTransactionSerializer(transaction)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def put(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return Response({"error": "Transaction not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = AccountTransactionSerializer(transaction, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return Response({"error": "Transaction not found"}, status=status.HTTP_404_NOT_FOUND)
-        transaction.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def delete(self, request, *args, **kwargs):
+        transaction_id = kwargs.get('pk')
+        try:
+            transaction = AccountTransaction.objects.get(pk=transaction_id)
+            transaction.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except AccountTransaction.DoesNotExist:
+            return Response({'error': 'Transaction not found'}, status=status.HTTP_404_NOT_FOUND)

@@ -1,16 +1,11 @@
 from django.urls import path
-from .views import PersonListCreateView, PersonDetailView, AccountListCreateView, AccountDetailView, AccountTransactionListCreateView, AccountTransactionDetailView
+from .views import PersonApiView, AccountApiView, AccountTransactionApiView
 
 urlpatterns = [
-    # Person URLs
-    path('persons/', PersonListCreateView.as_view(), name='person-list-create'),
-    path('persons/<int:pk>/', PersonDetailView.as_view(), name='person-detail'),
-
-    # Account URLs
-    path('accounts/', AccountListCreateView.as_view(), name='account-list-create'),
-    path('accounts/<int:pk>/', AccountDetailView.as_view(), name='account-detail'),
-
-    # AccountTransaction URLs
-    path('transactions/', AccountTransactionListCreateView.as_view(), name='transaction-list-create'),
-    path('transactions/<int:pk>/', AccountTransactionDetailView.as_view(), name='transaction-detail'),
+    path('persons/', PersonApiView.as_view(), name='person-list'),
+    path('persons/<int:pk>/', PersonApiView.as_view(), name='person-detail'),
+    path('accounts/', AccountApiView.as_view(), name='account-list'),
+    path('accounts/<int:pk>/', AccountApiView.as_view(), name='account-detail'),
+    path('transactions/', AccountTransactionApiView.as_view(), name='transaction-list'),
+    path('transactions/<int:pk>/', AccountTransactionApiView.as_view(), name='transaction-detail'),
 ]
