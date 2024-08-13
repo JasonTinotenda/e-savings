@@ -28,18 +28,15 @@ class Account(models.Model):
     def __str__(self):
         return f"Account {self.account_number} ({self.account_type}) - {self.person.first_name} {self.person.last_name}"
 
-class AccountTransaction(models.Model):
-    TRANSACTION_TYPE_CHOICES = [
-        ('DEPOSIT', 'Deposit'),
-        ('WITHDRAWAL', 'Withdrawal'),
-        ('TRANSFER', 'Transfer'),
-    ]
 
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
-    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES)
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
-    transaction_date = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=255, blank=True)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
+    def recalculate_balance(self):
+        # Recalculate balance based on related transactions
+        transactions = self.transactions.all()
+        new_balance = sum(transaction.get_adjusted_amount() for transaction in transactions)
+        self.balance = new_balance
+        self.save()
 
-    def __str__(self):
-        return f"{self.transaction_type} of {self.amount} on {self.transaction_date} for Account {self.account.account_number}"
+        def __str__(self):
+            return f'Account {self.id} - Balance: {self.balance}'

@@ -4,8 +4,9 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Account, Transaction, TransactionType
+from .models import Transaction, TransactionType
 from .serializers import AccountSerializer, TransactionSerializer, TransactionTypeSerializer
+from accounts.models import Account
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
@@ -17,6 +18,11 @@ class AccountViewSet(viewsets.ModelViewSet):
         return Response({'account_number': account.account_number, 'balance': account.balance})
 
 class TransactionViewSet(viewsets.ModelViewSet):
+    """
+        ViewSet for managing transactions.
+        Handles creation, updating, and retrieval of transactions.
+        Automatically recalculates account balance after each transaction.
+    """
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
 

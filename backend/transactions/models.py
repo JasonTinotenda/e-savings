@@ -1,51 +1,41 @@
 from django.db import models
-from django.db.models import Sum, F
-
-class Account(models.Model):
-    owner = models.CharField(max_length=100)
-    account_number = models.CharField(max_length=20, unique=True)
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-
-    def __str__(self):
-        return f"{self.owner} - {self.account_number}"
-
-    def recalculate_balance(self):
-        # Recalculate balance based on all transactions
-        balance = self.transactions.aggregate(
-            balance=Sum(
-                F('amount') * F('transaction_type__effect'),
-                output_field=models.DecimalField()
-            )
-        )['balance'] or 0.00
-        self.balance = balance
-        self.save()
+from accounts.models import Account
 
 class TransactionType(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    effect = models.IntegerField(choices=[(1, 'Add'), (-1, 'Subtract')], default=1)
-
-    def __str__(self):
-        return self.name
-
-class Transaction(models.Model):
-    TRANSACTION_CHOICES = [
+    NAME_CHOICES = [
         ('withdraw', 'Withdraw'),
         ('deposit', 'Deposit'),
         ('loan', 'Loan')
     ]
+    
+    name = models.CharField(max_length=10, choices=NAME_CHOICES, unique=True)
+    effect = models.IntegerField(choices=[(1, 'Add'), (-1, 'Subtract')], default=1)
+
+    def __str__(self):
+        return dict(self.NAME_CHOICES).get(self.name, self.name)
+    def get_effect(self):
+        return self.effect
+
+
+class Transaction(models.Model):    
 
     transaction_type = models.ForeignKey(TransactionType, on_delete=models.CASCADE)
-    account = models.ForeignKey(Account, related_name='transactions', on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    transaction_date = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255, blank=True)
 
     def save(self, *args, **kwargs):
-        super(Transaction, self).save(*args, **kwargs)
-        self.account.recalculate_balance()
+        super(Transaction, self).save(*args, **kwargs)  # Save the transaction first
+        self.account.recalculate_balance()  # Recalculate balance after saving
+        # Return the updated balance after recalculation
+        return self.account.balance
+    def get_adjusted_amount(self):
+        # Adjust the amount based on the effect of the transaction type
+        return self.amount * self.transaction_type.get_effect()        
 
     def __str__(self):
-        return f"{self.transaction_type.name} - {self.amount} - {self.timestamp}"
+        return f"{self.transaction_type} of {self.amount} on {self.transaction_date} for Account {self.account.account_number}"
 
 # Populate TransactionType on migration
 def create_transaction_types(sender, **kwargs):
