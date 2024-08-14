@@ -18,6 +18,8 @@ class LoanSerializer(serializers.ModelSerializer):
         fields = ['id', 'account', 'loan_type', 'loan_type_id', 'amount', 'status', 'created_at', 'updated_at', 'due_date', 'interest_amount']
         read_only_fields = ['status', 'created_at', 'updated_at', 'interest_amount']
 
+    
+
 
 class LoanApprovalSerializer(serializers.ModelSerializer):
     loan = LoanSerializer(read_only=True)
@@ -28,6 +30,19 @@ class LoanApprovalSerializer(serializers.ModelSerializer):
         model = LoanApproval
         fields = ['id', 'loan', 'loan_id', 'approved_by', 'approved_at']
         read_only_fields = ['approved_by', 'approved_at']
+
+    def create(self, validated_data):
+        """
+        Create or update the LoanApproval and handle the status change for the Loan.
+        """
+        loan = validated_data.get('loan')
+        if loan.status != LoanStatus.APPROVED:
+            loan.status = LoanStatus.APPROVED
+            loan.save()
+            # Create a transaction if the loan is approved
+            # Assuming the transaction creation logic is handled within the LoanApproval model
+            loan.approval.create_transaction()
+        return super().create(validated_data)
 
 
 class LoanRepaymentSerializer(serializers.ModelSerializer):

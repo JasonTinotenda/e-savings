@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from transactions.models import Transaction
 
 class LoanType(models.Model):
     SHORT_TERM = 'short_term'
@@ -29,7 +30,7 @@ class Loan(models.Model):
     account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='loans')
     loan_type = models.ForeignKey(LoanType, on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-    status = models.CharField(max_length=10, choices=LoanStatus.choices, default=LoanStatus.PENDING)
+    status = models.CharField(max_length=10, choices=LoanStatus.choices,editable=False, default=LoanStatus.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     due_date = models.DateField(null=True, blank=True)
@@ -42,7 +43,6 @@ class Loan(models.Model):
     def __str__(self):
         return f"Loan #{self.id} - {self.account} ({self.loan_type})"
 
-
 class LoanApproval(models.Model):
     loan = models.OneToOneField(Loan, on_delete=models.CASCADE, related_name='approval')
     approved_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
@@ -53,6 +53,26 @@ class LoanApproval(models.Model):
 
     class Meta:
         verbose_name_plural = "Loan Approvals"
+
+    def save(self, *args, **kwargs):
+        # Only update the loan if it has not been approved yet
+        if not self.pk and self.loan.status != LoanStatus.APPROVED:
+            self.loan.status = LoanStatus.APPROVED
+            self.loan.save()
+            self.create_transaction()
+        super().save(*args, **kwargs)
+
+    def create_transaction(self):
+        """
+        Create a transaction linked to the loan's account when the loan is approved.
+        """
+        if self.loan.status == LoanStatus.APPROVED:
+            Transaction.objects.create(
+                account=self.loan.account,
+                transaction_type='Loan',
+                amount=self.loan.amount,
+                description=f"Loan #{self.loan.id} approved"
+            )
 
 
 class LoanRepayment(models.Model):

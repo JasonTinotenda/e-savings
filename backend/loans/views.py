@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from .models import Loan, LoanType, LoanApproval, LoanRepayment
 from .serializers import LoanSerializer, LoanTypeSerializer, LoanApprovalSerializer, LoanRepaymentSerializer
 from accounts.models import Account
+from transactions.models import Transaction  # Assuming you have a Transaction model
 
 class LoanTypeViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -24,24 +25,28 @@ class LoanViewSet(viewsets.ModelViewSet):
     serializer_class = LoanSerializer
 
     def create(self, request, *args, **kwargs):
-        # Retrieve the account linked to the loan
-        account = get_object_or_404(Account, id=request.data.get('account'))
-        
-        # Add account and loan type to the request data
+        # Retrieve related objects if needed
+        account_id = request.data.get('account')
+        account = get_object_or_404(Account, id=account_id)
+
+        # Add related objects and other data to request data
         data = request.data.copy()
         data['account'] = account.id
         data['loan_type'] = data.get('loan_type')
-        
-        # Create and save the loan
+
+        # Validate and create the loan
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         
-        # Return response with loan details and updated account balance
+        # Fetch the created loan instance to include additional details if needed
+        loan = serializer.instance
+        
+        # Prepare response data
         headers = self.get_success_headers(serializer.data)
         return Response({
             'loan': serializer.data,
-            'balance': account.balance
+            'balance': account.balance,  # Example additional data
         }, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
@@ -76,12 +81,20 @@ class LoanViewSet(viewsets.ModelViewSet):
         loan = self.get_object()
         serializer = LoanApprovalSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(loan=loan)
+        approval = serializer.save(loan=loan)
         
-        # Update loan status
-        loan.status = serializer.validated_data.get('status')
-        loan.save()
-
+        # Update loan status and create transaction if approved
+        if loan.status == LoanStatus.PENDING and approval.loan.status == LoanStatus.APPROVED:
+            loan.status = LoanStatus.APPROVED
+            loan.save()
+            # Create a transaction
+            Transaction.objects.create(
+                account=loan.account,
+                amount=loan.amount,
+                transaction_type='loan_approval',
+                description=f"Loan #{loan.id} approved"
+            )
+        
         return Response({
             'loan': LoanSerializer(loan).data,
             'status': loan.status
@@ -106,8 +119,16 @@ class LoanApprovalViewSet(viewsets.ModelViewSet):
         
         # Retrieve the loan and update its status
         loan = serializer.instance.loan
-        loan.status = serializer.validated_data.get('status')
-        loan.save()
+        if loan.status == LoanStatus.PENDING:
+            loan.status = LoanStatus.APPROVED
+            loan.save()
+            # Create a transaction
+            Transaction.objects.create(
+                account=loan.account,
+                amount=loan.amount,
+                transaction_type='loan_approval',
+                description=f"Loan #{loan.id} approved"
+            )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
