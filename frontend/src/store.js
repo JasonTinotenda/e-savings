@@ -1,16 +1,14 @@
-import { createStore, applyMiddleware } from 'redux'; //createStore replace
-import { composeWithDevTools } from 'redux-devtools-extension';
-import {thunk} from 'redux-thunk';
-import rootReducer from './reducers';
+import { createStore, applyMiddleware, compose } from 'redux';
+import {thunk} from 'redux-thunk'; // or redux-saga if using saga
+import rootReducer from './reducers';  // This imports the combined reducers
 
-const initialState = {};
+// Redux DevTools extension setup
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const middleware = [thunk];
-
+// Create the Redux store with middleware and DevTools support
 const store = createStore(
-    rootReducer,
-    initialState,
-    composeWithDevTools(applyMiddleware(...middleware))
+  rootReducer,
+  composeEnhancers(applyMiddleware(thunk)) // Add other middlewares here if needed
 );
 
 export default store;

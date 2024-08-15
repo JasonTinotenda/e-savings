@@ -1,30 +1,45 @@
-import { SET_BALANCE, SET_TRANSACTION_HISTORY, ADD_TRANSACTION } from '../actions/transactions';
+import {
+    FETCH_ACCOUNT_DATA_REQUEST,
+    FETCH_ACCOUNT_DATA_SUCCESS,
+    FETCH_ACCOUNT_DATA_FAILURE,
+    SUBMIT_TRANSACTION_REQUEST,
+    SUBMIT_TRANSACTION_SUCCESS,
+    SUBMIT_TRANSACTION_FAILURE,
+} from '../actions/transactionActions';
 
 const initialState = {
     balance: 0,
     transactionHistory: [],
+    loading: false,
+    error: null,
 };
 
-const transactionsReducer = (state = initialState, action) => {
+// Fetch Account Data Reducer
+export const transactionReducer = (state = initialState, action) => {
     switch (action.type) {
-        case SET_BALANCE:
+        case FETCH_ACCOUNT_DATA_REQUEST:
+            return { ...state, loading: true };
+        case FETCH_ACCOUNT_DATA_SUCCESS:
             return {
                 ...state,
-                balance: action.payload,
+                loading: false,
+                balance: action.payload.balance,
+                transactionHistory: action.payload.transactions,
             };
-        case SET_TRANSACTION_HISTORY:
+        case FETCH_ACCOUNT_DATA_FAILURE:
+            return { ...state, loading: false, error: action.payload };
+        case SUBMIT_TRANSACTION_REQUEST:
+            return { ...state, loading: true };
+        case SUBMIT_TRANSACTION_SUCCESS:
             return {
                 ...state,
-                transactionHistory: action.payload,
+                loading: false,
+                balance: action.payload.balance,
+                transactionHistory: [...state.transactionHistory, action.payload.transaction],
             };
-        case ADD_TRANSACTION:
-            return {
-                ...state,
-                transactionHistory: [...state.transactionHistory, action.payload],
-            };
+        case SUBMIT_TRANSACTION_FAILURE:
+            return { ...state, loading: false, error: action.payload };
         default:
             return state;
     }
 };
-
-export default transactionsReducer;

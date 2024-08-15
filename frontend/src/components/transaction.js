@@ -1,18 +1,21 @@
+// components/Transactions.js
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchAccountData, submitTransaction } from '../actions/transactions';
+import { fetchAccountData, submitTransaction } from '../actions/transactionActions';
 
 const Transactions = ({ balance, transactionHistory, fetchAccountData, submitTransaction }) => {
-    const { accountId } = useParams();
+    const { account_id } = useParams();
     const [transaction, setTransaction] = useState({
-        transactionType: 'deposit',
+        transaction_type: 'deposit',
         amount: 0,
+        description: '',
     });
 
     useEffect(() => {
-        fetchAccountData(accountId);
-    }, [accountId, fetchAccountData]);
+        fetchAccountData(account_id);
+    }, [account_id, fetchAccountData]);
 
     const handleTransactionChange = (e) => {
         setTransaction({
@@ -23,8 +26,8 @@ const Transactions = ({ balance, transactionHistory, fetchAccountData, submitTra
 
     const handleTransactionSubmit = (e) => {
         e.preventDefault();
-        submitTransaction(accountId, transaction);
-        setTransaction({ transactionType: 'deposit', amount: 0 }); // Reset form
+        submitTransaction(account_id, transaction);
+        setTransaction({ transaction_type: 'deposit', amount: 0, description: '' }); // Reset form
     };
 
     return (
@@ -39,17 +42,30 @@ const Transactions = ({ balance, transactionHistory, fetchAccountData, submitTra
 
             <form onSubmit={handleTransactionSubmit} className="row g-3">
                 <div className="col-md-6">
+                    <label htmlFor="amount_id" className="form-label">AccountID</label>
+                    <input
+                        type="number"
+                        id="account_id"
+                        name="account_id"
+                        className="form-control"
+                        value={transaction.account_id}
+                        onChange={handleTransactionChange}
+                        min="0"
+                        required
+                    />
+                </div>
+                <div className="col-md-6">
                     <label htmlFor="transactionType" className="form-label">Transaction Type</label>
                     <select
                         id="transactionType"
                         name="transactionType"
                         className="form-select"
-                        value={transaction.transactionType}
+                        value={transaction.transaction_type}
                         onChange={handleTransactionChange}
                     >
-                        <option value="deposit">Deposit</option>
-                        <option value="withdraw">Withdraw</option>
-                        <option value="loan">Loan</option>
+                        <option value="2">Deposit</option>
+                        <option value="1">Withdraw</option>
+                        <option value="3">Loan</option>
                     </select>
                 </div>
 
@@ -67,6 +83,18 @@ const Transactions = ({ balance, transactionHistory, fetchAccountData, submitTra
                     />
                 </div>
 
+                <div className="col-md-12">
+                    <label htmlFor="description" className="form-label">Description (optional)</label>
+                    <input
+                        type="text"
+                        id="description"
+                        name="description"
+                        className="form-control"
+                        value={transaction.description}
+                        onChange={handleTransactionChange}
+                    />
+                </div>
+
                 <div className="col-12">
                     <button type="submit" className="btn btn-primary">Submit Transaction</button>
                 </div>
@@ -77,7 +105,7 @@ const Transactions = ({ balance, transactionHistory, fetchAccountData, submitTra
                 <ul className="list-group">
                     {transactionHistory.map((trans, index) => (
                         <li key={index} className="list-group-item">
-                            {trans.transaction_type} of ${trans.amount.toFixed(2)} on {new Date(trans.created_at).toLocaleString()}
+                            {trans.transaction_type} of ${trans.amount.toFixed(2)} on {new Date(trans.transaction_date).toLocaleString()}
                         </li>
                     ))}
                 </ul>
