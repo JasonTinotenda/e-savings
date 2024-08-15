@@ -1,5 +1,13 @@
-// src/services/api.js
 import axios from 'axios';
-import { REACT_APP_API_URL} from '../.env';
 
-export const fetchPosts = () => axios.get(`${REACT_APP_API_URL}/posts`);
+const API_URL = 'http://localhost:8000/api/'; // Replace with your Django backend URL
+
+export const getAccounts = () => axios.get(`${API_URL}/accounts/`);
+
+export const getAccountBalance = (accountId) => axios.get(`${API_URL}/accounts/${accountId}/balance/`);
+
+export const getTransactions = () => axios.get(`${API_URL}/transactions/`);
+
+export const createTransaction = (transactionData) => axios.post(`${API_URL}/transactions/`);
+
+export const getTransactionTypes = () => axios.get(`${API_URL}/transaction-types/`);
