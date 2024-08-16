@@ -14,11 +14,15 @@ import LoanDetail from './components/LoanDetail';
 import CreateLoan from './components/CreateLoan';
 import ApprovalLoan from './components/ApprovalLoan';
 import CreateRepayment from './components/CreateRepayment';
+import Home from './pages/Home';
+import TransactionsComponent from './components/Transaction';
+import TransactionTypeComponent from './components/TransactionTypes';
 
 
 const App = () => (
   <Router>
     <Routes>
+      <Route path="/" element={<Home/>} />
       <Route path="/persons" element={<PersonList/>} />
       <Route path="/persons/:id" element={<PersonDetail/>} />
       <Route path="/account-list" element={<AccountList/>} />
@@ -31,6 +35,8 @@ const App = () => (
       <Route path="/create-loan" element={<CreateLoan />} />
       <Route path="/approve-loan/:loanId" element={<ApprovalLoan />} />
       <Route path="/create-repayment/:loanId" element={<CreateRepayment />} />
+      <Route path="/transactions" element={<TransactionsComponent/>} />
+      <Route path="/transaction-types" element={<TransactionTypeComponent/>} />
     </Routes>
   </Router>
 );

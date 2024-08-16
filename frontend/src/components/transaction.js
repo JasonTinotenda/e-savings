@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTransactions, fetchTransactionTypes, fetchSingleTransaction, postTransaction } from '../redux/transactionSlice';
+import { fetchTransactions, fetchTransactionTypes, fetchSingleTransaction, postTransaction } from '../redux/transactionlice';
 
 const TransactionsComponent = () => {
   const dispatch = useDispatch();
