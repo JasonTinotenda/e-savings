@@ -1,29 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchPersons, createPerson, updatePerson, deletePerson } from '../redux/actions/accountActions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPersons, createPerson, updatePerson, deletePerson } from '../redux/personSlice'; // Updated import
 
 const PersonList = () => {
-  const [persons, setPersons] = useState([]); // Local state for persons
-  const [loading, setLoading] = useState(false); // Local state for loading status
-  const [error, setError] = useState(null); // Local state for error handling
   const dispatch = useDispatch();
+
+  // Use useSelector to get data from Redux state
+  const { persons, loading, error } = useSelector(state => state.persons); // Updated selector
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Set loading to true while fetching data
       try {
-        const result = await dispatch(fetchPersons()); // Fetch data using Redux action
-        setPersons(result.payload); // Update local state with fetched data
-        setLoading(false); // Set loading to false once data is fetched
+        await dispatch(fetchPersons());
       } catch (err) {
-        setError(err.message); // Set error message if fetching data fails
-        setLoading(false); // Set loading to false in case of error
+        console.error('Failed to fetch persons:', err);
       }
     };
     fetchData();
   }, [dispatch]);
 
-  const handleCreatePerson = () => {
+  const handleCreatePerson = async () => {
     const personData = {
       first_name: 'John',
       last_name: 'Doe',
@@ -32,25 +28,31 @@ const PersonList = () => {
       phone_number: '1234567890',
       address: '123 Main St'
     };
-    dispatch(createPerson(personData))
-      .then(() => dispatch(fetchPersons())) // Re-fetch data after creation
-      .then(result => setPersons(result.payload)) // Update local state with the new list
-      .catch(err => setError(err.message));
+    try {
+      await dispatch(createPerson(personData));
+      await dispatch(fetchPersons()); // Refresh the person list after creation
+    } catch (err) {
+      console.error('Failed to create person:', err);
+    }
   };
 
-  const handleUpdatePerson = (personId) => {
+  const handleUpdatePerson = async (personId) => {
     const updatedData = { email: 'new.email@example.com' };
-    dispatch(updatePerson(personId, updatedData))
-      .then(() => dispatch(fetchPersons())) // Re-fetch data after update
-      .then(result => setPersons(result.payload)) // Update local state with the updated list
-      .catch(err => setError(err.message));
+    try {
+      await dispatch(updatePerson({ personId, personData: updatedData }));
+      await dispatch(fetchPersons()); // Refresh the person list after update
+    } catch (err) {
+      console.error('Failed to update person:', err);
+    }
   };
 
-  const handleDeletePerson = (personId) => {
-    dispatch(deletePerson(personId))
-      .then(() => dispatch(fetchPersons())) // Re-fetch data after deletion
-      .then(result => setPersons(result.payload)) // Update local state with the updated list
-      .catch(err => setError(err.message));
+  const handleDeletePerson = async (personId) => {
+    try {
+      await dispatch(deletePerson(personId));
+      await dispatch(fetchPersons()); // Refresh the person list after deletion
+    } catch (err) {
+      console.error('Failed to delete person:', err);
+    }
   };
 
   return (

@@ -1,43 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchPerson, updatePerson } from '../redux/actions/accountActions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPerson, updatePerson } from '../redux/personSlice';
 import { useParams } from 'react-router-dom';
 
 const PersonDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const [person, setPerson] = useState(null); // Local state for person data
-  const [loading, setLoading] = useState(false); // Local state for loading status
-  const [error, setError] = useState(null); // Local state for error handling
-  const [editData, setEditData] = useState({}); // Local state for editable data
+
+  // Accessing state from Redux store
+  const { person, loading, error } = useSelector(state => state.persons);
+
+  const [editData, setEditData] = React.useState({}); // Local state for editable data
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Set loading to true while fetching data
       try {
-        const result = await dispatch(fetchPerson(id)); // Fetch person data using Redux action
-        setPerson(result.payload); // Update local state with fetched data
-        setEditData(result.payload); // Initialize editData with the fetched person data
-        setLoading(false); // Set loading to false once data is fetched
+        await dispatch(fetchPerson(id)); // Fetch person data using Redux action
       } catch (err) {
-        setError(err.message); // Set error message if fetching data fails
-        setLoading(false); // Set loading to false in case of error
+        console.error('Failed to fetch person:', err);
       }
     };
     fetchData();
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (person) {
+      setEditData(person); // Initialize editData with the fetched person data
+    }
+  }, [person]);
 
   const handleChange = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
   };
 
   const handleUpdate = () => {
-    dispatch(updatePerson(id, editData))
+    dispatch(updatePerson({ personId: id, personData: editData }))
       .then(() => {
-        // Optionally refetch the person data after update or handle success message
-        setPerson(editData); // Update local person data with the updated values
+        // Optionally handle success message
       })
-      .catch(err => setError(err.message)); // Handle any errors during update
+      .catch(err => console.error('Failed to update person:', err)); // Handle any errors during update
   };
 
   return (

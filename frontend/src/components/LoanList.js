@@ -1,24 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchLoans } from '../redux/actions/loanActions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLoans } from '../redux/loanSlice'; // Import the thunk from loanSlice
 
 const LoanListComponent = () => {
   const dispatch = useDispatch();
-  const [loans, setLoans] = useState([]); // Local state for loans
-  const [loading, setLoading] = useState(true); // Local state for loading
-  const [error, setError] = useState(null); // Local state for error
+  const { loans, loading, error } = useSelector((state) => state.loan);
 
   useEffect(() => {
     const loadLoans = async () => {
-      setLoading(true);
-      setError(null);
       try {
-        const result = await dispatch(fetchLoans());
-        setLoans(result); // Assuming fetchLoans returns the list of loans
+        await dispatch(fetchLoans()).unwrap(); // Dispatch the fetchLoans action and unwrap the result
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        console.error('Failed to fetch loans:', err.message); // Log error
       }
     };
 
@@ -31,7 +24,7 @@ const LoanListComponent = () => {
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       <ul>
-        {loans.map(loan => (
+        {loans.map((loan) => (
           <li key={loan.id}>{loan.amount} - {loan.status}</li>
         ))}
       </ul>

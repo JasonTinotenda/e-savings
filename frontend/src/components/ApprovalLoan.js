@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { approveLoan } from '../redux/actions/loanActions';
+import { approveLoan } from '../redux/loanSlice'; // Import the thunk from loanSlice
 
 const ApproveLoanComponent = ({ loanId }) => {
   const dispatch = useDispatch();
@@ -9,8 +9,9 @@ const ApproveLoanComponent = ({ loanId }) => {
 
   const handleApprove = async () => {
     setLoading(true); // Set loading to true when the approval process starts
+    setError(null); // Clear previous errors
     try {
-      await dispatch(approveLoan(loanId)); // Dispatch the approveLoan action
+      await dispatch(approveLoan(loanId)).unwrap(); // Dispatch the approveLoan action and unwrap the result
       setLoading(false); // Set loading to false once the process is complete
     } catch (err) {
       setError(err.message); // Set the error message in case of failure

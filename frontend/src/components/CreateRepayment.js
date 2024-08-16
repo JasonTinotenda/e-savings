@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createLoanRepayment } from '../redux/actions/loanActions';
+import { createLoanRepayment } from '../redux/loanSlice'; // Import the thunk from loanSlice
 
 const CreateRepaymentComponent = ({ loanId }) => {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const CreateRepaymentComponent = ({ loanId }) => {
     setLoading(true); // Set loading to true when the creation process starts
     setError(null); // Reset the error state before submission
     try {
-      await dispatch(createLoanRepayment(loanId, repaymentData)); // Dispatch the createLoanRepayment action
+      await dispatch(createLoanRepayment({ loanId, repaymentData })).unwrap(); // Dispatch the createLoanRepayment action and unwrap the result
       setLoading(false); // Set loading to false once the process is complete
       setRepaymentData({ amount: '', date: '' }); // Reset form after successful submission
     } catch (err) {

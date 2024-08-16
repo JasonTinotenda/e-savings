@@ -1,23 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchAccounts, createAccount, updateAccount, deleteAccount } from '../redux/actions/accountActions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAccounts, createAccount, updateAccount, deleteAccount } from '../redux/accountSlice';
 
 const AccountList = () => {
   const dispatch = useDispatch();
-  const [accounts, setAccounts] = useState([]); // Local state for accounts
-  const [loading, setLoading] = useState(false); // Local state for loading status
-  const [error, setError] = useState(null); // Local state for error handling
+  
+  // Accessing state from Redux store
+  const { accounts, loading, error } = useSelector(state => state.accounts);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Set loading to true while fetching data
       try {
-        const result = await dispatch(fetchAccounts()); // Fetch accounts using Redux action
-        setAccounts(result.payload); // Update local state with fetched accounts
-        setLoading(false); // Set loading to false once data is fetched
+        await dispatch(fetchAccounts()); // Fetch accounts using Redux action
       } catch (err) {
-        setError(err.message); // Set error message if fetching data fails
-        setLoading(false); // Set loading to false in case of error
+        console.error('Failed to fetch accounts:', err);
       }
     };
     fetchData();
@@ -31,40 +27,37 @@ const AccountList = () => {
     };
     try {
       const result = await dispatch(createAccount(accountData));
-      setAccounts([...accounts, result.payload]); // Update state with new account
+      // Handle success (e.g., display success message)
     } catch (err) {
-      setError(err.message);
+      console.error('Failed to create account:', err);
     }
   };
 
   const handleUpdateAccount = async (accountId) => {
     const updatedData = { account_type: 'CURRENT' };
     try {
-      const result = await dispatch(updateAccount(accountId, updatedData));
-      setAccounts(
-        accounts.map(account => 
-          account.id === accountId ? { ...account, ...result.payload } : account
-        )
-      ); // Update state with updated account data
+      const result = await dispatch(updateAccount({ accountId, accountData: updatedData }));
+      // Handle success (e.g., display success message)
     } catch (err) {
-      setError(err.message);
+      console.error('Failed to update account:', err);
     }
   };
 
   const handleDeleteAccount = async (accountId) => {
     try {
       await dispatch(deleteAccount(accountId));
-      setAccounts(accounts.filter(account => account.id !== accountId)); // Update state by removing the deleted account
+      // Handle success (e.g., display success message)
     } catch (err) {
-      setError(err.message);
+      console.error('Failed to delete account:', err);
     }
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
       <h1>Accounts</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
       <button onClick={handleCreateAccount}>Create Account</button>
       <ul>
         {accounts.map(account => (

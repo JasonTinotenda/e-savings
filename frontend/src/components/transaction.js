@@ -1,50 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  fetchTransactions,
-  fetchTransactionTypes,
-  fetchSingleTransaction,
-  postTransaction
-} from '../redux/actions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTransactions, fetchTransactionTypes, fetchSingleTransaction, postTransaction } from '../redux/transactionSlice';
 
 const TransactionsComponent = () => {
   const dispatch = useDispatch();
-  const [transactions, setTransactions] = useState([]);
-  const [transactionTypes, setTransactionTypes] = useState([]);
-  const [singleTransaction, setSingleTransaction] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  
+  // Extract data and states from Redux store
+  const transactions = useSelector((state) => state.transactions.transactions);
+  const transactionTypes = useSelector((state) => state.transactions.transactionTypes);
+  const singleTransaction = useSelector((state) => state.transactions.singleTransaction);
+  const loading = useSelector((state) => state.transactions.loading);
+  const error = useSelector((state) => state.transactions.error);
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const transactionsData = await dispatch(fetchTransactions());
-        setTransactions(transactionsData);
-        
-        const transactionTypesData = await dispatch(fetchTransactionTypes());
-        setTransactionTypes(transactionTypesData);
+    // Fetch initial data
+    dispatch(fetchTransactions());
+    dispatch(fetchTransactionTypes());
+    dispatch(fetchSingleTransaction(2)); // Fetch transaction with ID 2
 
-        const singleTransactionData = await dispatch(fetchSingleTransaction(2)); // Fetch transaction with ID 2
-        setSingleTransaction(singleTransactionData);
-
-        // Example data for posting a new transaction
-        const transactionData = {
-          account: "1",
-          amount: "907000",
-          account_id: "1",
-          transaction_type: "1"
-        };
-        await dispatch(postTransaction(transactionData));
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+    // Example data for posting a new transaction
+    const transactionData = {
+      account: "1",
+      amount: "907000",
+      account_id: "1",
+      transaction_type: "1"
     };
-
-    loadData();
+    dispatch(postTransaction(transactionData));
   }, [dispatch]);
 
   return (

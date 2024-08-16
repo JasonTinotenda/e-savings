@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createLoan } from '../redux/actions/loanActions';
+import { createLoan } from '../redux/loanSlice'; // Import the thunk from loanSlice
 
 const CreateLoanComponent = () => {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const CreateLoanComponent = () => {
     setLoading(true); // Set loading to true when the creation process starts
     setError(null); // Reset the error state before submission
     try {
-      await dispatch(createLoan(loanData)); // Dispatch the createLoan action
+      await dispatch(createLoan(loanData)).unwrap(); // Dispatch the createLoan action and unwrap the result
       setLoading(false); // Set loading to false once the process is complete
       setLoanData({ amount: '', loanType: '' }); // Reset form after successful submission
     } catch (err) {

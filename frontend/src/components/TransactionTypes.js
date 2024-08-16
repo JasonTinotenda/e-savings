@@ -1,28 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchTransactionTypes } from '../redux/actions/transactionActions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTransactionTypes } from '../redux/transactionlice';
 
 const TransactionTypeComponent = () => {
   const dispatch = useDispatch();
-  const [transactionTypes, setTransactionTypes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  
+  // Extract data and states from Redux store
+  const transactionTypes = useSelector((state) => state.transactions.transactionTypes);
+  const loading = useSelector((state) => state.transactions.loading);
+  const error = useSelector((state) => state.transactions.error);
 
   useEffect(() => {
-    const loadTransactionTypes = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await dispatch(fetchTransactionTypes());
-        setTransactionTypes(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadTransactionTypes();
+    dispatch(fetchTransactionTypes());
   }, [dispatch]);
 
   return (

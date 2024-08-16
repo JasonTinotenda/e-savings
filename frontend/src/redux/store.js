@@ -1,20 +1,21 @@
-import { createStore, applyMiddleware } from 'redux'; // Add the import statement for createStore and applyMiddleware
-import {thunk} from 'redux-thunk'; // Assuming you have installed redux-thunk
+import { configureStore } from '@reduxjs/toolkit';
+import {thunk} from 'redux-thunk'; 
+import loanReducer from './loanSlice';
+import transactionReducer from './transactionlice';
+import accountReducer from './accountSlice';
+import personReducer from './personSlice';
 
-import { combineReducers } from 'redux';
-import personsReducer from './reducers/accountReducer'; 
-import accountReducer from './reducers/accountReducer'; 
-import loanReducer from './reducers/loanReducer';
-import transactionReducer from './reducers/transactionReducer';
-
-const rootReducer = combineReducers({
-    personsReducer,
-    accountReducer,
-    loanReducer,
-    transactionReducer,
+const rootReducer = {
+    persons: personReducer,
+    account: accountReducer,
+    loan: loanReducer,
+    transaction: transactionReducer,
     // other reducers
-});
+};
 
-const store = createStore(rootReducer, applyMiddleware(thunk)); // Assuming you're using Redux Thunk
+const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+});
 
 export default store;
