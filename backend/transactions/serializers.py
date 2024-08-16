@@ -19,7 +19,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ['id', 'account', 'transaction_type', 'amount', 'transaction_date', 'description']
+        fields = ['id', 'account', 'account_id', 'transaction_type', 'amount', 'transaction_date', 'description']
 
     def validate(self, data):
         # Add any custom validation if necessary
