@@ -1,24 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchLoanDetails } from '../redux/actions/loanActions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLoanDetails } from '../redux/loanSlice'; // Import the thunk from loanSlice
 
 const LoanDetailComponent = ({ loanId }) => {
   const dispatch = useDispatch();
-  const [loanDetails, setLoanDetails] = useState(null); // Local state for loan details
-  const [loading, setLoading] = useState(true); // Local state for loading
-  const [error, setError] = useState(null); // Local state for error
+  const { loanDetails, loading, error } = useSelector((state) => state.loan);
 
   useEffect(() => {
     const fetchDetails = async () => {
-      setLoading(true);
-      setError(null);
       try {
-        const result = await dispatch(fetchLoanDetails(loanId));
-        setLoanDetails(result); // Assuming fetchLoanDetails returns the loan details
+        await dispatch(fetchLoanDetails(loanId)).unwrap(); // Dispatch the fetchLoanDetails action and unwrap the result
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        console.error('Failed to fetch loan details:', err.message); // Log error
       }
     };
 
@@ -34,6 +27,7 @@ const LoanDetailComponent = ({ loanId }) => {
         <div>
           <p>Amount: {loanDetails.amount}</p>
           <p>Status: {loanDetails.status}</p>
+          {/* Add more details as needed */}
         </div>
       )}
     </div>

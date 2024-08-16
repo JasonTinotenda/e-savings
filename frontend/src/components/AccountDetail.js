@@ -1,43 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchAccount, updateAccount } from '../redux/actions/accountActions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAccount, updateAccount } from '../redux/accountSlice';
 import { useParams } from 'react-router-dom';
 
 const AccountDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const [account, setAccount] = useState(null); // Local state for account data
-  const [loading, setLoading] = useState(false); // Local state for loading status
-  const [error, setError] = useState(null); // Local state for error handling
-  const [editData, setEditData] = useState({}); // Local state for editable data
+
+  // Accessing state from Redux store
+  const { account, loading, error } = useSelector(state => state.accounts);
+  const [editData, setEditData] = React.useState({}); // Local state for editable data
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Set loading to true while fetching data
       try {
-        const result = await dispatch(fetchAccount(id)); // Fetch account data using Redux action
-        setAccount(result.payload); // Update local state with fetched data
-        setEditData(result.payload); // Initialize editData with the fetched account data
-        setLoading(false); // Set loading to false once data is fetched
+        await dispatch(fetchAccount(id)); // Fetch account data using Redux action
       } catch (err) {
-        setError(err.message); // Set error message if fetching data fails
-        setLoading(false); // Set loading to false in case of error
+        console.error('Failed to fetch account:', err);
       }
     };
     fetchData();
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (account) {
+      setEditData(account); // Initialize editData with the fetched account data
+    }
+  }, [account]);
 
   const handleChange = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
   };
 
   const handleUpdate = () => {
-    dispatch(updateAccount(id, editData))
+    dispatch(updateAccount({ accountId: id, accountData: editData }))
       .then(() => {
-        // Optionally refetch the account data after update or handle success message
-        setAccount(editData); // Update local account data with the updated values
+        // Optionally handle success message
       })
-      .catch(err => setError(err.message)); // Handle any errors during update
+      .catch(err => console.error('Failed to update account:', err)); // Handle any errors during update
   };
 
   return (

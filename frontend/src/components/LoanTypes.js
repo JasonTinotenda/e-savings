@@ -1,24 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchLoanTypes } from '../redux/actions/loanActions';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLoanTypes } from '../redux/loanSlice'; // Import the thunk from loanSlice
 
 const LoanTypesComponent = () => {
   const dispatch = useDispatch();
-  const [loanTypes, setLoanTypes] = useState([]); // Local state for loanTypes
-  const [loading, setLoading] = useState(true); // Local state for loading
-  const [error, setError] = useState(null); // Local state for error
+  const { loanTypes, loading, error } = useSelector((state) => state.loan);
 
   useEffect(() => {
     const loadLoanTypes = async () => {
-      setLoading(true);
-      setError(null);
       try {
-        const result = await dispatch(fetchLoanTypes());
-        setLoanTypes(result); // Assuming fetchLoanTypes returns the list of loan types
+        await dispatch(fetchLoanTypes()).unwrap(); // Dispatch the fetchLoanTypes action and unwrap the result
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        console.error('Failed to fetch loan types:', err.message); // Log error
       }
     };
 
@@ -31,7 +24,7 @@ const LoanTypesComponent = () => {
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       <ul>
-        {loanTypes.map(type => (
+        {loanTypes.map((type) => (
           <li key={type.id}>{type.name}</li>
         ))}
       </ul>
