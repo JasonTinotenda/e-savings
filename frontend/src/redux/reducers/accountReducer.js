@@ -22,11 +22,20 @@ const personReducer = (state = initialPersonState, action) => {
     case PERSON_ACTIONS.DELETE_PERSON_REQUEST:
       return { ...state, loading: true };
     case PERSON_ACTIONS.FETCH_PERSONS_SUCCESS:
-      return { ...state, persons: action.payload, loading: false };
+      return { ...state,
+         persons: action.payload,
+         loading: false 
+        };
     case PERSON_ACTIONS.FETCH_PERSON_SUCCESS:
-      return { ...state, person: action.payload, loading: false };
+      return { ...state, 
+        person: action.payload, 
+        loading: false 
+      };
     case PERSON_ACTIONS.CREATE_PERSON_SUCCESS:
-      return { ...state, persons: [...state.persons, action.payload], loading: false };
+      return { ...state, 
+        persons: [...state.persons, action.payload], 
+        loading: false 
+      };
     case PERSON_ACTIONS.UPDATE_PERSON_SUCCESS:
       return { 
         ...state, 
@@ -96,9 +105,9 @@ const accountReducer = (state = initialAccountState, action) => {
   }
 };
 
-const rootReducer = combineReducers({
+const accountsReducer = combineReducers({
   person: personReducer,
   account: accountReducer
 });
 
-export default rootReducer;
+export default accountsReducer;

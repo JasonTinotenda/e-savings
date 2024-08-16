@@ -1,15 +1,28 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { fetchLoans } from '../redux/actions/loanActions';
 
 const LoanListComponent = () => {
   const dispatch = useDispatch();
-  const loans = useSelector(state => state.loans.loans);
-  const loading = useSelector(state => state.loans.loading);
-  const error = useSelector(state => state.loans.error);
+  const [loans, setLoans] = useState([]); // Local state for loans
+  const [loading, setLoading] = useState(true); // Local state for loading
+  const [error, setError] = useState(null); // Local state for error
 
   useEffect(() => {
-    dispatch(fetchLoans());
+    const loadLoans = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await dispatch(fetchLoans());
+        setLoans(result); // Assuming fetchLoans returns the list of loans
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadLoans();
   }, [dispatch]);
 
   return (

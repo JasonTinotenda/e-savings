@@ -1,15 +1,26 @@
-// src/components/PersonList.js
-
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { fetchPersons, createPerson, updatePerson, deletePerson } from '../redux/actions/accountActions';
 
 const PersonList = () => {
+  const [persons, setPersons] = useState([]); // Local state for persons
+  const [loading, setLoading] = useState(false); // Local state for loading status
+  const [error, setError] = useState(null); // Local state for error handling
   const dispatch = useDispatch();
-  const { persons, loading, error } = useSelector(state => state.person);
 
   useEffect(() => {
-    dispatch(fetchPersons());
+    const fetchData = async () => {
+      setLoading(true); // Set loading to true while fetching data
+      try {
+        const result = await dispatch(fetchPersons()); // Fetch data using Redux action
+        setPersons(result.payload); // Update local state with fetched data
+        setLoading(false); // Set loading to false once data is fetched
+      } catch (err) {
+        setError(err.message); // Set error message if fetching data fails
+        setLoading(false); // Set loading to false in case of error
+      }
+    };
+    fetchData();
   }, [dispatch]);
 
   const handleCreatePerson = () => {
@@ -21,16 +32,25 @@ const PersonList = () => {
       phone_number: '1234567890',
       address: '123 Main St'
     };
-    dispatch(createPerson(personData));
+    dispatch(createPerson(personData))
+      .then(() => dispatch(fetchPersons())) // Re-fetch data after creation
+      .then(result => setPersons(result.payload)) // Update local state with the new list
+      .catch(err => setError(err.message));
   };
 
   const handleUpdatePerson = (personId) => {
     const updatedData = { email: 'new.email@example.com' };
-    dispatch(updatePerson(personId, updatedData));
+    dispatch(updatePerson(personId, updatedData))
+      .then(() => dispatch(fetchPersons())) // Re-fetch data after update
+      .then(result => setPersons(result.payload)) // Update local state with the updated list
+      .catch(err => setError(err.message));
   };
 
   const handleDeletePerson = (personId) => {
-    dispatch(deletePerson(personId));
+    dispatch(deletePerson(personId))
+      .then(() => dispatch(fetchPersons())) // Re-fetch data after deletion
+      .then(result => setPersons(result.payload)) // Update local state with the updated list
+      .catch(err => setError(err.message));
   };
 
   return (

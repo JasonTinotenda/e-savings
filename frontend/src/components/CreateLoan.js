@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createLoan } from '../redux/actions/loanActions';
 
 const CreateLoanComponent = () => {
@@ -9,8 +9,8 @@ const CreateLoanComponent = () => {
     loanType: ''
   });
 
-  const loading = useSelector(state => state.loans.loading);
-  const error = useSelector(state => state.loans.error);
+  const [loading, setLoading] = useState(false); // Local state for loading status
+  const [error, setError] = useState(null); // Local state for error handling
 
   const handleChange = (e) => {
     setLoanData({
@@ -19,9 +19,18 @@ const CreateLoanComponent = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(createLoan(loanData));
+    setLoading(true); // Set loading to true when the creation process starts
+    setError(null); // Reset the error state before submission
+    try {
+      await dispatch(createLoan(loanData)); // Dispatch the createLoan action
+      setLoading(false); // Set loading to false once the process is complete
+      setLoanData({ amount: '', loanType: '' }); // Reset form after successful submission
+    } catch (err) {
+      setError(err.message); // Set the error message in case of failure
+      setLoading(false); // Set loading to false even if there is an error
+    }
   };
 
   return (
@@ -38,6 +47,7 @@ const CreateLoanComponent = () => {
             value={loanData.amount}
             onChange={handleChange}
             required
+            disabled={loading} // Disable input during loading
           />
         </div>
         <div>
@@ -48,9 +58,10 @@ const CreateLoanComponent = () => {
             value={loanData.loanType}
             onChange={handleChange}
             required
+            disabled={loading} // Disable input during loading
           />
         </div>
-        <button type="submit">Create Loan</button>
+        <button type="submit" disabled={loading}>Create Loan</button> {/* Disable the button during loading */}
       </form>
     </div>
   );

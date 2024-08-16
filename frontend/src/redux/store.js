@@ -1,14 +1,20 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import {thunk} from 'redux-thunk'; // or redux-saga if using saga
-import rootReducer from './reducers';  // This imports the combined reducers
+import { createStore, applyMiddleware } from 'redux'; // Add the import statement for createStore and applyMiddleware
+import {thunk} from 'redux-thunk'; // Assuming you have installed redux-thunk
 
-// Redux DevTools extension setup
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+import { combineReducers } from 'redux';
+import personsReducer from './reducers/accountReducer'; 
+import accountReducer from './reducers/accountReducer'; 
+import loanReducer from './reducers/loanReducer';
+import transactionReducer from './reducers/transactionReducer';
 
-// Create the Redux store with middleware and DevTools support
-const store = createStore(
-  rootReducer,
-  composeEnhancers(applyMiddleware(thunk)) // Add other middlewares here if needed
-);
+const rootReducer = combineReducers({
+    personsReducer,
+    accountReducer,
+    loanReducer,
+    transactionReducer,
+    // other reducers
+});
+
+const store = createStore(rootReducer, applyMiddleware(thunk)); // Assuming you're using Redux Thunk
 
 export default store;

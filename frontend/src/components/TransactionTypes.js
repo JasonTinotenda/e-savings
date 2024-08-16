@@ -1,23 +1,35 @@
-// src/components/TransactionTypeComponent.js
-
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { fetchTransactionTypes } from '../redux/actions/transactionActions';
 
 const TransactionTypeComponent = () => {
   const dispatch = useDispatch();
-  const { transactionTypes, loading, error } = useSelector(state => state);
+  const [transactionTypes, setTransactionTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchTransactionTypes());
-  }, [dispatch]);
+    const loadTransactionTypes = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await dispatch(fetchTransactionTypes());
+        setTransactionTypes(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+    loadTransactionTypes();
+  }, [dispatch]);
 
   return (
     <div>
       <h1>Transaction Types</h1>
+      {loading && <div>Loading...</div>}
+      {error && <div>Error: {error}</div>}
       <pre>{JSON.stringify(transactionTypes, null, 2)}</pre>
     </div>
   );
