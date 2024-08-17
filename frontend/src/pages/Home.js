@@ -11,6 +11,9 @@ const Home = () => {
           <Link to="/persons">Persons List</Link>
         </ListGroup.Item>
         <ListGroup.Item>
+          <Link to="/persons">Persons List</Link>
+        </ListGroup.Item>
+        <ListGroup.Item>
           <Link to="/account-list">Accounts List</Link>
         </ListGroup.Item>
         <ListGroup.Item>
