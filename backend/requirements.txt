@@ -1,7 +1,7 @@
-Django,
-djangorestframework,
-djangorestframework-simplejwt, 
-djoser,
-django-cors-headers,
-python-decouple,
+django
+djangorestframework
+djangorestframework-simplejwt 
+djoser
+django-cors-headers
+python-decouple
 psycopg2

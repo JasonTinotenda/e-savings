@@ -65,3 +65,69 @@
   display: block;
   font-weight: 600;
 }
+
+
+/* Loans.css */
+.loan-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure the modal is on top of other content */
+}
+
+.modal-content {
+  background: var(--clr-primar-light);
+  padding: 30px;
+  border-radius: 10px;
+  width: 340px;
+  max-width: 90%;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -42px;
+  margin-bottom: -128px;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.modal-content button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: var(--clr-pumpkin);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-content button:hover {
+  background-color: darken(var(--clr-pumpkin), 10%);
+}
