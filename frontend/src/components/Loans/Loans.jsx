@@ -24,11 +24,11 @@ const Loans = () => {
             </div>
             <ul className="data-list">
                 <li className="data-item text-silver-v1">
-                    <span className="data-item-text">Savings Target</span>
+                    <span className="data-item-text">Loan Amount</span>
                     <span className="data-item-value">$ 500,000</span>
                 </li>
                 <li className="data-item text-silver-v1">
-                    <span className="data-item-text">Target Reached</span>
+                    <span className="data-item-text">Loan Repaid</span>
                     <span className="data-item-value">$ 250,000</span>
                 </li>
             </ul>
