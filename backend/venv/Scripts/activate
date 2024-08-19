@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\projects.code\e-savings\backend\venv"
+VIRTUAL_ENV="C:\projects.code\Bank_Management_System_Django\Bank_Management_System_Django\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
