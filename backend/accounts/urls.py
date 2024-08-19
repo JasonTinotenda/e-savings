@@ -1,9 +1,10 @@
-from django.urls import path
-from .views import PersonApiView, AccountApiView
+from django.conf.urls import url
+from . import views
+
+app_name = "accounts"
 
 urlpatterns = [
-    path('persons/', PersonApiView.as_view(), name='person-list'),
-    path('persons/<int:pk>/', PersonApiView.as_view(), name='person-detail'),
-    path('accounts/', AccountApiView.as_view(), name='account-list'),
-    path('accounts/<int:pk>/', AccountApiView.as_view(), name='account-detail'),
+    url(r"^register/$", views.register, name = "signup"),
+    url(r"^login/$", views.sign_in, name = "signin"),
+    url(r"^logout/$", views.logout_view, name = "logout"),
 ]
