@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../actions/auth';
 
@@ -52,7 +52,7 @@ const Navbar = ({ logout, isAuthenticated }) => {
                     </ul>
                 </div>
             </nav>
-            {redirect ? <Redirect to='/' /> : <Fragment></Fragment>}
+            {redirect ? <Navigate to='/' /> : <Fragment></Fragment>}
         </Fragment>
     );
 };

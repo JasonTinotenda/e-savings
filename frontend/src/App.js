@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Home from './containers/Home';
 import Login from './containers/Login';
@@ -19,16 +19,16 @@ const App = () => (
     <Provider store={store}>
         <Router>
             <Layout>
-                <Switch>
-                    <Route exact path='/' component={Home} />
-                    <Route exact path='/login' component={Login} />
-                    <Route exact path='/signup' component={Signup} />
-                    <Route exact path='/facebook' component={Facebook} />
-                    <Route exact path='/google' component={Google} />
-                    <Route exact path='/reset-password' component={ResetPassword} />
-                    <Route exact path='/password/reset/confirm/:uid/:token' component={ResetPasswordConfirm} />
-                    <Route exact path='/activate/:uid/:token' component={Activate} />
-                </Switch>
+                <Routes>
+                    <Route exact path='/' element={<Home/>} />
+                    <Route exact path='/login' element={<Login/>} />
+                    <Route exact path='/signup' element={<Signup/>} />
+                    <Route exact path='/facebook' element={<Facebook/>} />
+                    <Route exact path='/google' element={<Google/>} />
+                    <Route exact path='/reset-password' element={<ResetPassword/>} />
+                    <Route exact path='/password/reset/confirm/:uid/:token' element={<ResetPasswordConfirm/>} />
+                    <Route exact path='/activate/:uid/:token' element={<Activate/>} />
+                </Routes>
             </Layout>
         </Router>
     </Provider>

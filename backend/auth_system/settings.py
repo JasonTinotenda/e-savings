@@ -86,12 +86,14 @@ WSGI_APPLICATION = 'auth_system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'auth_system',
+        'NAME': 'esavings',
         'USER': 'postgres',
-        'PASSWORD': '[YOUR DATABASE PASSWORD]',
+        'PASSWORD': 'admin',
         'HOST': 'localhost'
     }
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
