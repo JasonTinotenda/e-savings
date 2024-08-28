@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -50,17 +51,14 @@ class AccountViewSet(viewsets.ModelViewSet):
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save()
-        account = serializer.instance.account
-        if serializer.instance.transaction_type == 'deposit':
-            account.balance += serializer.instance.amount
-        elif serializer.instance.transaction_type == 'withdraw' and account.balance >= serializer.instance.amount:
-            account.balance -= serializer.instance.amount
-        account.save()
+        instance = serializer.save()
+        instance.update_account_balance()
 
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        instance.update_account_balance()
 class PersonViewSet(viewsets.ModelViewSet):
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
@@ -72,7 +70,6 @@ class PersonViewSet(viewsets.ModelViewSet):
         reader = csv.DictReader(file.read().decode('utf-8').splitlines())
         for row in reader:
             Person.objects.create(
-                user=User.objects.get(username=row['username']),
                 first_name=row['first_name'],
                 last_name=row['last_name'],
                 email=row['email'],

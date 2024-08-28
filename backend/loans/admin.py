@@ -9,8 +9,8 @@ class LoanTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Loan)
 class LoanAdmin(admin.ModelAdmin):
-    list_display = ('loan_type', 'person', 'amount', 'status', 'created_at')
-    search_fields = ('loan_type__name', 'person__first_name', 'person__last_name')
+    list_display = ('loan_type', 'account', 'amount', 'status', 'created_at', 'updated_at')
+    search_fields = ('loan_type__name', 'account__account_number')  # Adjust 'account__account_number' based on actual field in the Account model
     list_filter = ('status', 'created_at')
 
 @admin.register(LoanRepayment)
