@@ -28,7 +28,7 @@ const Navbar = ({ logout, isAuthenticated }) => {
     return (
         <Fragment>
             <nav className='navbar navbar-expand-lg navbar-light bg-light'>
-                <Link className='navbar-brand' to='/'>Auth System</Link>
+                <Link className='navbar-brand' to='/'>SCRA Financial System</Link>
                 <button 
                     className='navbar-toggler' 
                     type='button' 
@@ -44,6 +44,9 @@ const Navbar = ({ logout, isAuthenticated }) => {
                     <ul className='navbar-nav'>
                         <li className='nav-item active'>
                             <Link className='nav-link' to='/'>Home <span className='sr-only'>(current)</span></Link>
+                        </li>
+                        <li className='nav-item'>
+                            <Link className='nav-link' to='/accounts'>Accounts</Link>
                         </li>
                         {isAuthenticated ? authLinks() : guestLinks()}
                     </ul>
