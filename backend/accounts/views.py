@@ -1,92 +1,171 @@
-from django.forms import ValidationError
-from rest_framework import viewsets, permissions, status
-from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.views import APIView
+from rest_framework import status
+from drf_spectacular.utils import extend_schema
+from core.views import StandardizedResponseMixin
 from .models import Person, Account, Transaction
 from .serializers import PersonSerializer, AccountSerializer, TransactionSerializer
-from rest_framework.permissions import IsAdminUser
-from django.utils import timezone
-from decimal import Decimal
-from django.db.models import Sum
-from rest_framework.parsers import FileUploadParser
-from django.http import HttpResponse
-import csv
 
-class AccountViewSet(viewsets.ModelViewSet):
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class PersonApiView(StandardizedResponseMixin, APIView):
+    
+    @extend_schema(
+        responses={200: PersonSerializer(many=True)},
+    )
+    def get(self, request, *args, **kwargs):
+        objects = Person.objects.all()
+        serializer = PersonSerializer(objects, many=True)
+        return self.success_response(serializer.data)
 
-    @action(detail=True, methods=['get'], permission_classes=[permissions.IsAuthenticated])
-    def statement(self, request, pk=None):
-        account = self.get_object()
-        transactions = account.transactions.all()
-        total_deposits = transactions.filter(transaction_type='deposit').aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00')
-        total_withdrawals = transactions.filter(transaction_type='withdraw').aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00')
+    @extend_schema(request=PersonSerializer, responses={201: PersonSerializer})
+    def post(self, request, *args, **kwargs):
+        serializer = PersonSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response(serializer.data, status_code=status.HTTP_201_CREATED)
+        return self.error_response(serializer.errors)
 
-        statement = {
-            "account_number": account.account_number,
-            "balance": account.balance,
-            "total_deposits": total_deposits,
-            "total_withdrawals": total_withdrawals,
-            "transactions": TransactionSerializer(transactions, many=True).data
-        }
-        return Response(statement)
+class PersonDetailApiView(StandardizedResponseMixin, APIView):
+    
+    def get_object(self, pk):
+        try:
+            return Person.objects.get(pk=pk)
+        except Person.DoesNotExist:
+            return None
+    
+    @extend_schema(
+        responses={200: PersonSerializer},
+    )
+    def get(self, request, pk, *args, **kwargs):
+        person = self.get_object(pk)
+        if person is None:
+            return self.error_response("Person not found", status_code=status.HTTP_404_NOT_FOUND)
+        serializer = PersonSerializer(person)
+        return self.success_response(serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[IsAdminUser])
-    def generate_report(self, request):
-        accounts = Account.objects.all()
-        report_data = []
-        for account in accounts:
-            transactions = account.transactions.all()
-            report_data.append({
-                "account_number": account.account_number,
-                "balance": account.balance,
-                "total_transactions": transactions.count(),
-                "total_deposits": transactions.filter(transaction_type='deposit').aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00'),
-                "total_withdrawals": transactions.filter(transaction_type='withdraw').aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00'),
-            })
-        return Response(report_data)
+    @extend_schema(request=PersonSerializer, responses={200: PersonSerializer})
+    def put(self, request, pk, *args, **kwargs):
+        person = self.get_object(pk)
+        if person is None:
+            return self.error_response("Person not found", status_code=status.HTTP_404_NOT_FOUND)
+        serializer = PersonSerializer(person, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response(serializer.data)
+        return self.error_response(serializer.errors)
 
-class TransactionViewSet(viewsets.ModelViewSet):
-    queryset = Transaction.objects.all()
-    serializer_class = TransactionSerializer
+    @extend_schema(responses={204: None})
+    def delete(self, request, pk, *args, **kwargs):
+        person = self.get_object(pk)
+        if person is None:
+            return self.error_response("Person not found", status_code=status.HTTP_404_NOT_FOUND)
+        person.delete()
+        return self.success_response(None, status_code=status.HTTP_204_NO_CONTENT)
 
-    def perform_create(self, serializer):
-        instance = serializer.save()
-        instance.update_account_balance()
+class AccountApiView(StandardizedResponseMixin, APIView):
 
-    def perform_update(self, serializer):
-        instance = serializer.save()
-        instance.update_account_balance()
-class PersonViewSet(viewsets.ModelViewSet):
-    queryset = Person.objects.all()
-    serializer_class = PersonSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    @extend_schema(
+        responses={200: AccountSerializer(many=True)},
+    )
+    def get(self, request, *args, **kwargs):
+        objects = Account.objects.all()
+        serializer = AccountSerializer(objects, many=True)
+        return self.success_response(serializer.data)
 
-    @action(detail=False, methods=['post'], permission_classes=[IsAdminUser], parser_classes=[FileUploadParser])
-    def bulk_import(self, request):
-        file = request.data['file']
-        reader = csv.DictReader(file.read().decode('utf-8').splitlines())
-        for row in reader:
-            Person.objects.create(
-                first_name=row['first_name'],
-                last_name=row['last_name'],
-                email=row['email'],
-                date_of_birth=row['date_of_birth'],
-                address=row['address'],
-            )
-        return Response({"status": "imported"}, status=status.HTTP_201_CREATED)
+    @extend_schema(request=AccountSerializer, responses={201: AccountSerializer})
+    def post(self, request, *args, **kwargs):
+        serializer = AccountSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response(serializer.data, status_code=status.HTTP_201_CREATED)
+        return self.error_response(serializer.errors)
 
-    @action(detail=False, methods=['get'], permission_classes=[IsAdminUser])
-    def export_members(self, request):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="members.csv"'
+class AccountDetailApiView(StandardizedResponseMixin, APIView):
+    
+    def get_object(self, pk):
+        try:
+            return Account.objects.get(pk=pk)
+        except Account.DoesNotExist:
+            return None
+    
+    @extend_schema(
+        responses={200: AccountSerializer},
+    )
+    def get(self, request, pk, *args, **kwargs):
+        account = self.get_object(pk)
+        if account is None:
+            return self.error_response("Account not found", status_code=status.HTTP_404_NOT_FOUND)
+        serializer = AccountSerializer(account)
+        return self.success_response(serializer.data)
 
-        writer = csv.writer(response)
-        writer.writerow(['username', 'first_name', 'last_name', 'email', 'date_of_birth', 'address'])
+    @extend_schema(request=AccountSerializer, responses={200: AccountSerializer})
+    def put(self, request, pk, *args, **kwargs):
+        account = self.get_object(pk)
+        if account is None:
+            return self.error_response("Account not found", status_code=status.HTTP_404_NOT_FOUND)
+        serializer = AccountSerializer(account, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response(serializer.data)
+        return self.error_response(serializer.errors)
 
-        for person in Person.objects.all():
-            writer.writerow([person.user.username, person.first_name, person.last_name, person.email, person.date_of_birth, person.address])
+    @extend_schema(responses={204: None})
+    def delete(self, request, pk, *args, **kwargs):
+        account = self.get_object(pk)
+        if account is None:
+            return self.error_response("Account not found", status_code=status.HTTP_404_NOT_FOUND)
+        account.delete()
+        return self.success_response(None, status_code=status.HTTP_204_NO_CONTENT)
 
-        return response
+class TransactionApiView(StandardizedResponseMixin, APIView):
+
+    @extend_schema(
+        responses={200: TransactionSerializer(many=True)},
+    )
+    def get(self, request, *args, **kwargs):
+        objects = Transaction.objects.all()
+        serializer = TransactionSerializer(objects, many=True)
+        return self.success_response(serializer.data)
+
+    @extend_schema(request=TransactionSerializer, responses={201: TransactionSerializer})
+    def post(self, request, *args, **kwargs):
+        serializer = TransactionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response(serializer.data, status_code=status.HTTP_201_CREATED)
+        return self.error_response(serializer.errors)
+
+class TransactionDetailApiView(StandardizedResponseMixin, APIView):
+    
+    def get_object(self, pk):
+        try:
+            return Transaction.objects.get(pk=pk)
+        except Transaction.DoesNotExist:
+            return None
+    
+    @extend_schema(
+        responses={200: TransactionSerializer},
+    )
+    def get(self, request, pk, *args, **kwargs):
+        transaction = self.get_object(pk)
+        if transaction is None:
+            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
+        serializer = TransactionSerializer(transaction)
+        return self.success_response(serializer.data)
+
+    @extend_schema(request=TransactionSerializer, responses={200: TransactionSerializer})
+    def put(self, request, pk, *args, **kwargs):
+        transaction = self.get_object(pk)
+        if transaction is None:
+            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
+        serializer = TransactionSerializer(transaction, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response(serializer.data)
+        return self.error_response(serializer.errors)
+
+    @extend_schema(responses={204: None})
+    def delete(self, request, pk, *args, **kwargs):
+        transaction = self.get_object(pk)
+        if transaction is None:
+            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
+        transaction.delete()
+        return self.success_response(None, status_code=status.HTTP_204_NO_CONTENT)

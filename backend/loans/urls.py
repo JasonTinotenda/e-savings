@@ -1,20 +1,12 @@
-from django.urls import path
-from .views import (
-    LoanViewSet,
-    LoanTypeViewSet,
-    LoanApprovalViewSet,
-    LoanRepaymentViewSet
-)
+from rest_framework.routers import DefaultRouter
+from .views import LoanTypeViewSet, LoanViewSet, LoanRepaymentViewSet, AuditLogViewSet
+
+router = DefaultRouter()
+router.register(r'loan-types', LoanTypeViewSet, basename='loan-type')
+router.register(r'loans', LoanViewSet, basename='loan')
+router.register(r'loan-repayments', LoanRepaymentViewSet, basename='loan-repayment')
+router.register(r'audit-logs', AuditLogViewSet, basename='audit-log')
 
 urlpatterns = [
-    path('loans/', LoanViewSet.as_view({'get': 'list', 'post': 'create'}), name='loan-list'),
-    path('loans/<int:pk>/', LoanViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='loan-detail'),
-
-    path('loan-types/', LoanTypeViewSet.as_view({'get': 'list'}), name='loan-type-list'),
-    
-    path('loan-approvals/', LoanApprovalViewSet.as_view({'get': 'list', 'post': 'create'}), name='loan-approval-list'),
-    path('loan-approvals/<int:pk>/', LoanApprovalViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='loan-approval-detail'),
-
-    path('loan-repayments/', LoanRepaymentViewSet.as_view({'get': 'list', 'post': 'create'}), name='loan-repayment-list'),
-    path('loan-repayments/<int:pk>/', LoanRepaymentViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='loan-repayment-detail'),
-]
+    # Other URL patterns
+] + router.urls
