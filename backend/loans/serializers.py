@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from accounts.models import Transaction
 from .models import LoanType, Loan, LoanRepayment, AuditLog
 
 class LoanTypeSerializer(serializers.ModelSerializer):
@@ -7,27 +9,26 @@ class LoanTypeSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'interest_rate', 'max_term']
 
 class LoanSerializer(serializers.ModelSerializer):
-    person = serializers.ReadOnlyField(source='person.name')
-    interest = serializers.SerializerMethodField()
-    remaining_balance = serializers.SerializerMethodField()
-
     class Meta:
         model = Loan
-        fields = ['id', 'person', 'loan_type', 'amount', 'interest_rate', 'interest', 'remaining_balance', 'start_date', 'end_date', 'status']
+        fields = ['id', 'account', 'loan_type', 'amount', 'interest_rate', 'start_date', 'end_date', 'status', 'created_at', 'updated_at']
+    
+    def create(self, validated_data):
+        # Extract the status from validated data
+        status = validated_data.pop('status', 'pending')
 
-    def get_interest(self, obj):
-        return obj.calculate_interest()
+        # Create the Loan instance
+        loan = Loan.objects.create(**validated_data)
 
-    def get_remaining_balance(self, obj):
-        return obj.amount
-
-    def validate(self, data):
-        if data['amount'] <= 0:
-            raise serializers.ValidationError("Loan amount must be greater than zero.")
-        if data['end_date'] <= data['start_date']:
-            raise serializers.ValidationError("End date must be after start date.")
-        return data
-
+        # Create a transaction if the loan is approved
+        if status == 'approved':
+            Transaction.objects.create(
+                account=loan.account,
+                amount=loan.amount,
+                transaction_type='deposit'
+            )
+        
+        return loan
 class LoanRepaymentSerializer(serializers.ModelSerializer):
     loan = LoanSerializer(read_only=True)
     loan_id = serializers.PrimaryKeyRelatedField(queryset=Loan.objects.all(), source='loan')

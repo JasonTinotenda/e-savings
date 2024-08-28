@@ -1,6 +1,10 @@
+from datetime import timedelta
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from accounts.models import Account , Transaction
+
+
 
 class LoanType(models.Model):
     name = models.CharField(max_length=100)
@@ -20,12 +24,12 @@ class Loan(models.Model):
         ('repaid', 'Repaid')
     ]
 
-    person = models.ForeignKey('accounts.Person', related_name='loans', on_delete=models.CASCADE)
-    loan_type = models.ForeignKey(LoanType, on_delete=models.PROTECT)
+    account = models.ForeignKey(Account, related_name='loans', on_delete=models.CASCADE)
+    loan_type = models.ForeignKey('LoanType', on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    interest_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text="If not set, the loan type interest rate will be used.")
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField()
+    interest_rate = models.DecimalField(max_digits=5, decimal_places=2, editable=False)
+    start_date = models.DateField(default=timezone.now,editable=False)
+    end_date = models.DateField(editable=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,7 +42,7 @@ class Loan(models.Model):
         return (self.end_date - self.start_date).days / 30  # Convert days to months
 
     def __str__(self):
-        return f"Loan {self.id} - {self.person}"
+        return f"Loan {self.id} - {self.account}"
 
 class LoanRepayment(models.Model):
     loan = models.ForeignKey(Loan, related_name='repayments', on_delete=models.CASCADE)

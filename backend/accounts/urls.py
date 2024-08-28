@@ -1,12 +1,23 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import PersonViewSet, AccountViewSet, TransactionViewSet
-
-router = DefaultRouter()
-router.register(r'persons', PersonViewSet)
-router.register(r'accounts', AccountViewSet)
-router.register(r'transactions', TransactionViewSet)
+from django.urls import path
+from .views import (
+    PersonApiView,
+    PersonDetailApiView,
+    AccountApiView,
+    AccountDetailApiView,
+    TransactionApiView,
+    TransactionDetailApiView
+)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # Person URLs
+    path('persons/', PersonApiView.as_view(), name='person-list'),
+    path('persons/<int:pk>/', PersonDetailApiView.as_view(), name='person-detail'),
+
+    # Account URLs
+    path('accounts/', AccountApiView.as_view(), name='account-list'),
+    path('accounts/<int:pk>/', AccountDetailApiView.as_view(), name='account-detail'),
+
+    # Transaction URLs
+    path('transactions/', TransactionApiView.as_view(), name='transaction-list'),
+    path('transactions/<int:pk>/', TransactionDetailApiView.as_view(), name='transaction-detail'),
 ]
