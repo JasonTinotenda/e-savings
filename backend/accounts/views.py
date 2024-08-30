@@ -1,171 +1,56 @@
-from rest_framework.views import APIView
-from rest_framework import status
-from drf_spectacular.utils import extend_schema
-from core.views import StandardizedResponseMixin
-from .models import Person, Account, Transaction
-from .serializers import PersonSerializer, AccountSerializer, TransactionSerializer
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Person, Account
+from .forms import PersonForm, AccountForm
 
-class PersonApiView(StandardizedResponseMixin, APIView):
-    
-    @extend_schema(
-        responses={200: PersonSerializer(many=True)},
-    )
-    def get(self, request, *args, **kwargs):
-        objects = Person.objects.all()
-        serializer = PersonSerializer(objects, many=True)
-        return self.success_response(serializer.data)
+# Person Views
+class PersonListView(ListView):
+    model = Person
+    template_name = 'person_list.html'
 
-    @extend_schema(request=PersonSerializer, responses={201: PersonSerializer})
-    def post(self, request, *args, **kwargs):
-        serializer = PersonSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data, status_code=status.HTTP_201_CREATED)
-        return self.error_response(serializer.errors)
+class PersonDetailView(DetailView):
+    model = Person
+    template_name = 'person_detail.html'
 
-class PersonDetailApiView(StandardizedResponseMixin, APIView):
-    
-    def get_object(self, pk):
-        try:
-            return Person.objects.get(pk=pk)
-        except Person.DoesNotExist:
-            return None
-    
-    @extend_schema(
-        responses={200: PersonSerializer},
-    )
-    def get(self, request, pk, *args, **kwargs):
-        person = self.get_object(pk)
-        if person is None:
-            return self.error_response("Person not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = PersonSerializer(person)
-        return self.success_response(serializer.data)
+class PersonCreateView(CreateView):
+    model = Person
+    form_class = PersonForm
+    template_name = 'person_form.html'
+    success_url = reverse_lazy('person_list')
 
-    @extend_schema(request=PersonSerializer, responses={200: PersonSerializer})
-    def put(self, request, pk, *args, **kwargs):
-        person = self.get_object(pk)
-        if person is None:
-            return self.error_response("Person not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = PersonSerializer(person, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data)
-        return self.error_response(serializer.errors)
+class PersonUpdateView(UpdateView):
+    model = Person
+    form_class = PersonForm
+    template_name = 'person_form.html'
+    success_url = reverse_lazy('person_list')
 
-    @extend_schema(responses={204: None})
-    def delete(self, request, pk, *args, **kwargs):
-        person = self.get_object(pk)
-        if person is None:
-            return self.error_response("Person not found", status_code=status.HTTP_404_NOT_FOUND)
-        person.delete()
-        return self.success_response(None, status_code=status.HTTP_204_NO_CONTENT)
+class PersonDeleteView(DeleteView):
+    model = Person
+    template_name = 'person_confirm_delete.html'
+    success_url = reverse_lazy('person_list')
 
-class AccountApiView(StandardizedResponseMixin, APIView):
+# Account Views
+class AccountListView(ListView):
+    model = Account
+    template_name = 'account_list.html'
 
-    @extend_schema(
-        responses={200: AccountSerializer(many=True)},
-    )
-    def get(self, request, *args, **kwargs):
-        objects = Account.objects.all()
-        serializer = AccountSerializer(objects, many=True)
-        return self.success_response(serializer.data)
+class AccountDetailView(DetailView):
+    model = Account
+    template_name = 'account_detail.html'
 
-    @extend_schema(request=AccountSerializer, responses={201: AccountSerializer})
-    def post(self, request, *args, **kwargs):
-        serializer = AccountSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data, status_code=status.HTTP_201_CREATED)
-        return self.error_response(serializer.errors)
+class AccountCreateView(CreateView):
+    model = Account
+    form_class = AccountForm
+    template_name = 'account_form.html'
+    success_url = reverse_lazy('account_list')
 
-class AccountDetailApiView(StandardizedResponseMixin, APIView):
-    
-    def get_object(self, pk):
-        try:
-            return Account.objects.get(pk=pk)
-        except Account.DoesNotExist:
-            return None
-    
-    @extend_schema(
-        responses={200: AccountSerializer},
-    )
-    def get(self, request, pk, *args, **kwargs):
-        account = self.get_object(pk)
-        if account is None:
-            return self.error_response("Account not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = AccountSerializer(account)
-        return self.success_response(serializer.data)
+class AccountUpdateView(UpdateView):
+    model = Account
+    form_class = AccountForm
+    template_name = 'account_form.html'
+    success_url = reverse_lazy('account_list')
 
-    @extend_schema(request=AccountSerializer, responses={200: AccountSerializer})
-    def put(self, request, pk, *args, **kwargs):
-        account = self.get_object(pk)
-        if account is None:
-            return self.error_response("Account not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = AccountSerializer(account, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data)
-        return self.error_response(serializer.errors)
-
-    @extend_schema(responses={204: None})
-    def delete(self, request, pk, *args, **kwargs):
-        account = self.get_object(pk)
-        if account is None:
-            return self.error_response("Account not found", status_code=status.HTTP_404_NOT_FOUND)
-        account.delete()
-        return self.success_response(None, status_code=status.HTTP_204_NO_CONTENT)
-
-class TransactionApiView(StandardizedResponseMixin, APIView):
-
-    @extend_schema(
-        responses={200: TransactionSerializer(many=True)},
-    )
-    def get(self, request, *args, **kwargs):
-        objects = Transaction.objects.all()
-        serializer = TransactionSerializer(objects, many=True)
-        return self.success_response(serializer.data)
-
-    @extend_schema(request=TransactionSerializer, responses={201: TransactionSerializer})
-    def post(self, request, *args, **kwargs):
-        serializer = TransactionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data, status_code=status.HTTP_201_CREATED)
-        return self.error_response(serializer.errors)
-
-class TransactionDetailApiView(StandardizedResponseMixin, APIView):
-    
-    def get_object(self, pk):
-        try:
-            return Transaction.objects.get(pk=pk)
-        except Transaction.DoesNotExist:
-            return None
-    
-    @extend_schema(
-        responses={200: TransactionSerializer},
-    )
-    def get(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = TransactionSerializer(transaction)
-        return self.success_response(serializer.data)
-
-    @extend_schema(request=TransactionSerializer, responses={200: TransactionSerializer})
-    def put(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = TransactionSerializer(transaction, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data)
-        return self.error_response(serializer.errors)
-
-    @extend_schema(responses={204: None})
-    def delete(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        transaction.delete()
-        return self.success_response(None, status_code=status.HTTP_204_NO_CONTENT)
+class AccountDeleteView(DeleteView):
+    model = Account
+    template_name = 'account_confirm_delete.html'
+    success_url = reverse_lazy('account_list')

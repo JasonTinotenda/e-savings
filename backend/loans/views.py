@@ -1,5 +1,5 @@
 from rest_framework import viewsets, mixins
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema
 from .models import LoanType, Loan, LoanRepayment, AuditLog
 from .serializers import LoanTypeSerializer, LoanSerializer, LoanRepaymentSerializer, AuditLogSerializer
 from core.views import StandardizedResponseMixin

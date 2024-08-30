@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import Transaction
+from transactions.models import Transaction
 from .models import LoanType, Loan, LoanRepayment, AuditLog
 
 class LoanTypeSerializer(serializers.ModelSerializer):

@@ -2,7 +2,8 @@ from datetime import timedelta
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from accounts.models import Account , Transaction
+from accounts.models import Account
+from transactions.models import Transaction
 
 
 
@@ -27,7 +28,7 @@ class Loan(models.Model):
     account = models.ForeignKey(Account, related_name='loans', on_delete=models.CASCADE)
     loan_type = models.ForeignKey('LoanType', on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    interest_rate = models.DecimalField(max_digits=5, decimal_places=2, editable=False)
+    interest_rate = models.DecimalField(max_digits=5, decimal_places=2,default=0.00, editable=False)
     start_date = models.DateField(default=timezone.now,editable=False)
     end_date = models.DateField(editable=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Person Details{% endblock %}
+
+{% block content %}
+<h1>{{ person.full_name }}</h1>
+<p><strong>Email:</strong> {{ person.email }}</p>
+<p><strong>Date of Birth:</strong> {{ person.date_of_birth }}</p>
+<p><strong>Age:</strong> {{ person.age }}</p>
+<p><strong>Address:</strong> {{ person.address }}</p>
+
+<h2>Accounts</h2>
+<a href="{% url 'account_create' person.id %}" class="btn btn-primary mb-3">Add Account</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Account Number</th>
+            <th>Balance</th>
+            <th>Interest Rate</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for account in person.accounts.all %}
+        <tr>
+            <td>{{ account.account_number }}</td>
+            <td>{{ account.balance }}</td>
+            <td>{{ account.interest_rate }}%</td>
+            <td>
+                <a href="{% url 'account_detail' account.id %}" class="btn btn-info btn-sm">View</a>
+                <a href="{% url 'account_update' account.id %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'account_delete' account.id %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'person_update' person.id %}" class="btn btn-warning">Edit Person</a>
+<a href="{% url 'person_list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}
