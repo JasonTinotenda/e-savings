@@ -20,9 +20,11 @@ const Navbar = ({ logout, isAuthenticated }) => {
     );
 
     const authLinks = () => (
-        <li className='nav-item'>
-            <a className='nav-link' href='#!' onClick={logout_user}>Logout</a>
-        </li>
+        <Fragment>
+            <li className='nav-item'>
+                <a className='nav-link' href='#!' onClick={logout_user}>Logout</a>
+            </li>
+        </Fragment>
     );
 
     return (
@@ -47,6 +49,15 @@ const Navbar = ({ logout, isAuthenticated }) => {
                         </li>
                         <li className='nav-item'>
                             <Link className='nav-link' to='/accounts'>Accounts</Link>
+                        </li>
+                        <li className='nav-item'>
+                            <Link className='nav-link' to='/person-list'>Person List</Link>
+                        </li>
+                        <li className='nav-item'>
+                            <Link className='nav-link' to='/accounts-list'>Accounts List</Link>
+                        </li>
+                        <li className='nav-item'>
+                            <Link className='nav-link' to='/transaction-list'>Transaction List</Link>
                         </li>
                         {isAuthenticated ? authLinks() : guestLinks()}
                     </ul>
