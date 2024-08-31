@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Loan Type Details{% endblock %}
+
+{% block content %}
+<h1>{{ loantype.name }}</h1>
+<ul class="list-group">
+    <li class="list-group-item"><strong>Interest Rate:</strong> {{ loantype.interest_rate }}%</li>
+    <li class="list-group-item"><strong>Maximum Term:</strong> {{ loantype.max_term }} months</li>
+</ul>
+<div class="mt-3">
+    <a href="{% url 'loans:loantype_update' loantype.pk %}" class="btn btn-warning">Edit</a>
+    <a href="{% url 'loans:loantype_delete' loantype.pk %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'loans:loantype_list' %}" class="btn btn-secondary">Back to List</a>
+</div>
+{% endblock %}

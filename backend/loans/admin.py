@@ -21,6 +21,6 @@ class LoanRepaymentAdmin(admin.ModelAdmin):
 
 @admin.register(AuditLog)
 class AuditLogAdmin(admin.ModelAdmin):
-    list_display = ('user', 'action', 'model_name', 'model_id', 'timestamp')
-    search_fields = ('user__username', 'model_name')
+    list_display = ('account', 'action', 'model_name', 'model_id', 'timestamp')
+    search_fields = ('account_number', 'model_name')
     list_filter = ('action', 'timestamp')

@@ -3,39 +3,119 @@
 {% block title %}Person Details{% endblock %}
 
 {% block content %}
-<h1>{{ person.full_name }}</h1>
-<p><strong>Email:</strong> {{ person.email }}</p>
-<p><strong>Date of Birth:</strong> {{ person.date_of_birth }}</p>
-<p><strong>Age:</strong> {{ person.age }}</p>
-<p><strong>Address:</strong> {{ person.address }}</p>
+<div class="container mt-5">
+    <h1 class="text-center display-4 mb-4" style="color: #333;">Person Details</h1>
 
-<h2>Accounts</h2>
-<a href="{% url 'account_create' person.id %}" class="btn btn-primary mb-3">Add Account</a>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Account Number</th>
-            <th>Balance</th>
-            <th>Interest Rate</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for account in person.accounts.all %}
-        <tr>
-            <td>{{ account.account_number }}</td>
-            <td>{{ account.balance }}</td>
-            <td>{{ account.interest_rate }}%</td>
-            <td>
-                <a href="{% url 'account_detail' account.id %}" class="btn btn-info btn-sm">View</a>
-                <a href="{% url 'account_update' account.id %}" class="btn btn-warning btn-sm">Edit</a>
-                <a href="{% url 'account_delete' account.id %}" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="card shadow-sm rounded-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">{{ person.full_name }}</h4>
+            <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="material-icons">delete</i>
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <div class="d-flex flex-column flex-md-row">
+                    <div class="me-md-5">
+                        <p><strong>Name:</strong> {{ person.first_name }} {{ person.last_name }}</p>
+                        <p><strong>Email:</strong> {{ person.email }}</p>
+                        <p><strong>Date of Birth:</strong> {{ person.date_of_birth|date:"F j, Y" }}</p>
+                        <p><strong>Address:</strong> {{ person.address }}</p>
+                    </div>
+                </div>
+            </div>
 
-<a href="{% url 'person_update' person.id %}" class="btn btn-warning">Edit Person</a>
-<a href="{% url 'person_list' %}" class="btn btn-secondary">Back to List</a>
+            <h2 class="h5">Accounts</h2>
+            <a href="{% url 'account_create' %}" class="btn btn-success mb-3">
+                <i class="material-icons">add_circle</i> Add Account
+            </a>
+
+            {% if person.accounts.exists %}
+            <div class="table-responsive">
+                <table class="table table-hover shadow-sm">
+                    <thead class="thead-dark">
+                        <tr class="text-center">
+                            <th style="width:50px;">
+                                <div class="form-check custom-checkbox checkbox-success check-lg me-3">
+                                    <input type="checkbox" class="form-check-input" id="checkAllAccounts">
+                                    <label class="form-check-label" for="checkAllAccounts"></label>
+                                </div>
+                            </th>
+                            <th><strong>Account Number</strong></th>
+                            <th><strong>Balance</strong></th>
+                            <th><strong>Interest Rate</strong></th>
+                            <th><strong>Actions</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in person.accounts.all %}
+                        <tr class="align-middle text-center">
+                            <td>
+                                <div class="form-check custom-checkbox checkbox-success check-lg me-3">
+                                    <input type="checkbox" class="form-check-input" id="customCheckBox{{ forloop.counter }}">
+                                    <label class="form-check-label" for="customCheckBox{{ forloop.counter }}"></label>
+                                </div>
+                            </td>
+                            <td>{{ account.account_number }}</td>
+                            <td>${{ account.balance|floatformat:2 }}</td>
+                            <td>{{ account.interest_rate }}%</td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <a href="{% url 'account_detail' account.id %}" class="btn btn-outline-info btn-sm me-1" title="View Details" aria-label="View Account {{ account.account_number }}">
+                                        <i class="material-icons">visibility</i>
+                                    </a>
+                                    <a href="{% url 'account_update' account.id %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Account" aria-label="Edit Account {{ account.account_number }}">
+                                        <i class="material-icons">edit</i>
+                                    </a>
+                                    <form action="{% url 'account_delete' account.id %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-danger btn-sm delete-button" title="Delete Account" aria-label="Delete Account {{ account.account_number }}">
+                                            <i class="material-icons">delete</i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No accounts available.</p>
+            {% endif %}
+
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="{% url 'person_update' person.id %}" class="btn btn-outline-warning">
+                    <i class="material-icons">edit</i> Edit Person
+                </a>
+                <a href="{% url 'person_list' %}" class="btn btn-outline-secondary">
+                    <i class="material-icons">arrow_back</i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete {{ person.full_name }}? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <form action="{% url 'person_delete' person.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

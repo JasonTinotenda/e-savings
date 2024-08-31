@@ -43,13 +43,12 @@ INSTALLED_APPS = [
     'esavings',
     'accounts',
     'loans',
-    'social_django',
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_spectacular',
     'core',
-    'transactions'
+    'transactions',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +64,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'esavings.urls'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

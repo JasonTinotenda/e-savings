@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Loan Repayments{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Loan Repayments</h1>
+    <a href="{% url 'loans:loanrepayment_create' %}" class="btn btn-primary">Add Repayment</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Loan</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for repayment in repayments %}
+        <tr>
+            <td><a href="{% url 'loans:loanrepayment_detail' repayment.pk %}">#{{ repayment.id }}</a></td>
+            <td><a href="{% url 'loans:loan_detail' repayment.loan.pk %}">Loan #{{ repayment.loan.id }}</a></td>
+            <td>{{ repayment.amount }}</td>
+            <td>{{ repayment.date }}</td>
+            <td>
+                <a href="{% url 'loans:loanrepayment_update' repayment.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'loans:loanrepayment_delete' repayment.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No Repayments available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

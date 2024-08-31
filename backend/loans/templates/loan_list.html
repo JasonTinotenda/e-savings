@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Loans{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Loans</h1>
+    <a href="{% url 'loans:loan_create' %}" class="btn btn-primary">Add Loan</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Account</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Interest Rate (%)</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for loan in loans %}
+        <tr>
+            <td><a href="{% url 'loans:loan_detail' loan.pk %}">#{{ loan.id }}</a></td>
+            <td>{{ loan.account }}</td>
+            <td>{{ loan.loan_type.name }}</td>
+            <td>{{ loan.amount }}</td>
+            <td>{{ loan.interest_rate }}</td>
+            <td>{{ loan.get_status_display }}</td>
+            <td>{{ loan.start_date }}</td>
+            <td>{{ loan.end_date }}</td>
+            <td>
+                <a href="{% url 'loans:loan_update' loan.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'loans:loan_delete' loan.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="9">No Loans available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

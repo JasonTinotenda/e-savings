@@ -29,10 +29,15 @@ class PersonDeleteView(DeleteView):
     template_name = 'person_confirm_delete.html'
     success_url = reverse_lazy('person_list')
 
-# Account Views
+
 class AccountListView(ListView):
     model = Account
     template_name = 'account_list.html'
+    context_object_name = 'accounts'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 class AccountDetailView(DetailView):
     model = Account

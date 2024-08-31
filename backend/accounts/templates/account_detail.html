@@ -3,13 +3,61 @@
 {% block title %}Account Details{% endblock %}
 
 {% block content %}
-<h1>Account {{ account.account_number }}</h1>
-<p><strong>Person:</strong> {{ account.person.full_name }}</p>
-<p><strong>Balance:</strong> {{ account.balance }}</p>
-<p><strong>Interest Rate:</strong> {{ account.interest_rate }}%</p>
-<p><strong>Created At:</strong> {{ account.created_at }}</p>
-<p><strong>Updated At:</strong> {{ account.updated_at }}</p>
+<div class="container mt-5">
+    <h1 class="text-center display-4 mb-4" style="color: #333;">Account Details</h1>
 
-<a href="{% url 'account_update' account.id %}" class="btn btn-warning">Edit Account</a>
-<a href="{% url 'account_list' %}" class="btn btn-secondary">Back to List</a>
-{% endblock
+    <div class="card shadow-sm rounded-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">Account {{ account.account_number }}</h4>
+            <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="material-icons">delete</i>
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <div class="d-flex flex-column flex-md-row">
+                    <div class="me-md-5">
+                        <p><strong>Person:</strong> {{ account.person.full_name }}</p>
+                        <p><strong>Balance:</strong> ${{ account.balance|floatformat:2 }}</p>
+                        <p><strong>Interest Rate:</strong> {{ account.interest_rate }}%</p>
+                        <p><strong>Created At:</strong> {{ account.created_at|date:"F j, Y, g:i a" }}</p>
+                        <p><strong>Updated At:</strong> {{ account.updated_at|date:"F j, Y, g:i a" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="{% url 'account_update' account.pk %}" class="btn btn-outline-warning">
+                    <i class="material-icons">edit</i> Edit Account
+                </a>
+                <a href="{% url 'account_list' %}" class="btn btn-outline-secondary">
+                    <i class="material-icons">arrow_back</i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete Account {{ account.account_number }}? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <form action="{% url 'account_delete' account.pk %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
