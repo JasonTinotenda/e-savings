@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<main class="container mt-5">
+    <h1 class="display-4 text-center mb-4">Welcome to the Dashboard</h1>
+
+    <div class="row">
+        <!-- Person Management Card -->
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card border-primary shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-person-fill"></i> Person Management
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage all persons in the system.</p>
+                    <a href="{% url 'accounts:person_list' %}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="View and manage all persons">Go to Persons</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Management Card -->
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card border-success shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-bank"></i> Account Management
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage all accounts in the system.</p>
+                    <a href="{% url 'accounts:account_list' %}" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="View and manage all accounts">Go to Accounts</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Management Card -->
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card border-warning shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <i class="bi bi-credit-card"></i> Loan Management
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage all loans in the system.</p>
+                    <a href="{% url 'loans:loan_list' %}" class="btn btn-outline-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="View and manage all loans">Go to Loans</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Card -->
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card border-info shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-cash"></i> Transactions
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage all transactions in the system.</p>
+                    <a href="{% url 'transactions:transaction_list' %}" class="btn btn-outline-info" data-bs-toggle="tooltip" data-bs-placement="top" title="View and manage all transactions">Go to Transactions</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Card -->
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <i class="bi bi-file-earmark-bar-graph"></i> Reports
+                </div>
+                <div class="card-body">
+                    <p class="card-text">View financial reports.</p>
+                    <a href="{% url 'reports:report_list' %}" class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="View and manage financial reports">Go to Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Example Summary Cards -->
+    <div class="row mt-4">
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card border-light shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Persons</h5>
+                    <p class="card-text">350</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card border-light shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Accounts</h5>
+                    <p class="card-text">1200</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card border-light shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Loans</h5>
+                    <p class="card-text">45</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackModalLabel">Feedback</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="feedback" class="form-label">Your Feedback</label>
+                            <textarea class="form-control" id="feedback" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- JavaScript for Tooltip Initialization -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
+{% endblock %}

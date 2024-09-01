@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit Repayment{% else %}Add Repayment{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Card for form layout with max-width -->
+    <div class="card shadow-lg rounded-3 border-light mx-auto" style="max-width: 800px;">
+        <div class="card-header bg-primary text-white">
+            <h4 class="card-title mb-0">{% if form.instance.pk %}Edit Repayment{% else %}Add Repayment{% endif %}</h4>
+        </div>
+        <div class="card-body">
+            <!-- Form starts here -->
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Repayment Form Fields -->
+                <div class="mb-2">
+                    <label for="id_repayment_amount" class="form-label">Repayment Amount</label>
+                    {{ form.repayment_amount|as_crispy_field }}
+                </div>
+                
+                <div class="mb-2">
+                    <label for="id_repayment_date" class="form-label">Repayment Date</label>
+                    {{ form.repayment_date|as_crispy_field }}
+                </div>
+
+                <!-- Buttons for Submit and Cancel -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" style="flex: 1; max-width: 200px;">
+                        <i class="material-icons align-middle">save</i> {% if form.instance.pk %}Update{% else %}Create{% endif %}
+                    </button>
+                    <a href="{% url 'loans:loanrepayment_list' %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
+                        <i class="material-icons align-middle">arrow_back</i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

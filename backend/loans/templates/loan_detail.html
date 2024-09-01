@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Loan Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center display-4 mb-4" style="color: #333;">Loan Details</h1>
+
+    <div class="card shadow-sm rounded-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">Loan #{{ loan.id }}</h4>
+            <div class="btn-group">
+                <a href="{% url 'loans:loan_update' loan.pk %}" class="btn btn-outline-light btn-sm me-1">
+                    <i class="material-icons">edit</i>
+                </a>
+                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="material-icons">delete</i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Account:</strong> {{ loan.account }}</li>
+                <li class="list-group-item"><strong>Type:</strong> {{ loan.loan_type.name }}</li>
+                <li class="list-group-item"><strong>Amount:</strong> ${{ loan.amount|floatformat:2 }}</li>
+                <li class="list-group-item"><strong>Interest Rate:</strong> {{ loan.interest_rate }}%</li>
+                <li class="list-group-item"><strong>Status:</strong> {{ loan.get_status_display }}</li>
+                <li class="list-group-item"><strong>Start Date:</strong> {{ loan.start_date|date:"F j, Y" }}</li>
+                <li class="list-group-item"><strong>End Date:</strong> {{ loan.end_date|date:"F j, Y" }}</li>
+                <li class="list-group-item"><strong>Created At:</strong> {{ loan.created_at|date:"F j, Y H:i" }}</li>
+                <li class="list-group-item"><strong>Updated At:</strong> {{ loan.updated_at|date:"F j, Y H:i" }}</li>
+            </ul>
+
+            <h2 class="mt-5">Repayments</h2>
+            <a href="{% url 'loans:loanrepayment_create' %}?loan={{ loan.pk }}" class="btn btn-primary mb-3">
+                <i class="material-icons">add_circle</i> Add Repayment
+            </a>
+            {% if loan.repayments.exists %}
+            <div class="table-responsive">
+                <table class="table table-hover shadow-sm">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for repayment in loan.repayments.all %}
+                        <tr>
+                            <td><a href="{% url 'loans:loanrepayment_detail' repayment.pk %}">#{{ repayment.id }}</a></td>
+                            <td>${{ repayment.amount|floatformat:2 }}</td>
+                            <td>{{ repayment.date|date:"F j, Y" }}</td>
+                            <td>
+                                <a href="{% url 'loans:loanrepayment_update' repayment.pk %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Repayment">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                                <a href="{% url 'loans:loanrepayment_delete' repayment.pk %}" class="btn btn-outline-danger btn-sm" title="Delete Repayment">
+                                    <i class="material-icons">delete</i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No Repayments made.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No repayments made.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete Loan #{{ loan.id }}? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="{% url 'loans:loan_delete' loan.pk %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-between">
+        <a href="{% url 'loans:loan_list' %}" class="btn btn-outline-secondary">
+            <i class="material-icons">arrow_back</i> Back to List
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,23 +1,23 @@
 from django.urls import path
 from .views import (
-    PersonApiView,
-    PersonDetailApiView,
-    AccountApiView,
-    AccountDetailApiView,
-    TransactionApiView,
-    TransactionDetailApiView
+    PersonListView, PersonDetailView, PersonCreateView, PersonUpdateView, PersonDeleteView,
+    AccountListView, AccountDetailView, AccountCreateView, AccountUpdateView, AccountDeleteView
 )
+
+app_name = 'accounts'
 
 urlpatterns = [
     # Person URLs
-    path('persons/', PersonApiView.as_view(), name='person-list'),
-    path('persons/<int:pk>/', PersonDetailApiView.as_view(), name='person-detail'),
+    path('persons/', PersonListView.as_view(), name='person_list'),
+    path('person/<int:pk>/', PersonDetailView.as_view(), name='person_detail'),
+    path('person/create/', PersonCreateView.as_view(), name='person_create'),
+    path('person/<int:pk>/edit/', PersonUpdateView.as_view(), name='person_update'),
+    path('person/<int:pk>/delete/', PersonDeleteView.as_view(), name='person_delete'),
 
     # Account URLs
-    path('accounts/', AccountApiView.as_view(), name='account-list'),
-    path('accounts/<int:pk>/', AccountDetailApiView.as_view(), name='account-detail'),
-
-    # Transaction URLs
-    path('transactions/', TransactionApiView.as_view(), name='transaction-list'),
-    path('transactions/<int:pk>/', TransactionDetailApiView.as_view(), name='transaction-detail'),
+    path('accounts/', AccountListView.as_view(), name='account_list'),
+    path('account/<int:pk>/', AccountDetailView.as_view(), name='account_detail'),
+    path('account/create/', AccountCreateView.as_view(), name='account_create'),
+    path('account/<int:pk>/edit/', AccountUpdateView.as_view(), name='account_update'),
+    path('account/<int:pk>/delete/', AccountDeleteView.as_view(), name='account_delete'),
 ]

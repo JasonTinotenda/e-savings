@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import LoanType, Loan, LoanRepayment, AuditLog
+from .models import LoanType, Loan, LoanRepayment
 
 @admin.register(LoanType)
 class LoanTypeAdmin(admin.ModelAdmin):
@@ -19,8 +19,3 @@ class LoanRepaymentAdmin(admin.ModelAdmin):
     search_fields = ('loan__loan_type__name', 'loan__person__first_name', 'loan__person__last_name')
     list_filter = ('date',)
 
-@admin.register(AuditLog)
-class AuditLogAdmin(admin.ModelAdmin):
-    list_display = ('user', 'action', 'model_name', 'model_id', 'timestamp')
-    search_fields = ('user__username', 'model_name')
-    list_filter = ('action', 'timestamp')

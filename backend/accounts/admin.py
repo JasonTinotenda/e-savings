@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Person, Account, Transaction
+from .models import Person, Account
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
@@ -12,8 +12,4 @@ class AccountAdmin(admin.ModelAdmin):
     search_fields = ('account_number', 'person__first_name', 'person__last_name')
     list_filter = ('created_at',)
 
-@admin.register(Transaction)
-class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('account', 'transaction_type', 'amount', 'date')
-    search_fields = ('account__account_number',)
-    list_filter = ('transaction_type', 'date')
+

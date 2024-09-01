@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}{{ form.instance.pk|yesno:"Edit Person,Add Person" }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Card for form layout with max-width -->
+    <div class="card shadow-lg rounded-3 border-light mx-auto" style="max-width: 800px;">
+        <div class="card-header bg-primary text-white">
+            <h4 class="card-title mb-0">{{ form.instance.pk|yesno:"Edit Person,Add Person" }}</h4>
+        </div>
+        <div class="card-body">
+            <!-- Form starts here -->
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- First Name Field -->
+                <div class="mb-2">
+                    <label for="id_first_name" class="form-label">First Name</label>
+                    {{ form.first_name|as_crispy_field }}
+                </div>
+                
+                <!-- Last Name Field -->
+                <div class="mb-2">
+                    <label for="id_last_name" class="form-label">Last Name</label>
+                    {{ form.last_name|as_crispy_field }}
+                </div>
+                
+                <!-- Email Field -->
+                <div class="mb-2">
+                    <label for="id_email" class="form-label">Email</label>
+                    {{ form.email|as_crispy_field }}
+                </div>
+                
+                <!-- Date of Birth Field -->
+                <div class="mb-2">
+                    <label for="id_date_of_birth" class="form-label">Date of Birth</label>
+                    {{ form.date_of_birth|as_crispy_field }}
+                </div>
+                
+                <!-- Address Field -->
+                <div class="mb-2">
+                    <label for="id_address" class="form-label">Address</label>
+                    {{ form.address|as_crispy_field }}
+                </div>
+                
+                <!-- Buttons for Submit and Cancel -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" style="flex: 1; max-width: 200px;">
+                        <i class="material-icons align-middle">save</i> {{ form.instance.pk|yesno:"Update,Create" }}
+                    </button>
+                    <a href="{% url 'accounts:person_list' %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
+                        <i class="material-icons align-middle">arrow_back</i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

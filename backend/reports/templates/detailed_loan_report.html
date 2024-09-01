@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detailed Loan Report</title>
+<body>
+    <h1>Loan Details for Loan ID {{ loan.id }}</h1>
+    <p>Account: {{ loan.account.account_number }}</p>
+    <p>Amount: {{ loan.amount }}</p>
+    <p>Status: {{ loan.status }}</p>
+    <p>Start Date: {{ loan.start_date }}</p>
+    <p>End Date: {{ loan.end_date }}</p>
+
+    <h2>Repayments</h2>
+    <ul>
+        {% for repayment in repayments %}
+            <li>{{ repayment.amount }} paid on {{ repayment.date }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
