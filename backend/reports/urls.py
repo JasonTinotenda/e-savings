@@ -1,8 +1,10 @@
 from django.urls import path
 from .views import ReportView, AccountReportView, LoanReportView, TransactionReportView, DetailedAccountReportView, DetailedLoanReportView
 
+app_name = 'reports'
+
 urlpatterns = [
-    path('', ReportView.as_view(), name='report-home'),
+    path('', ReportView.as_view(), name='report_list'),
     path('accounts-reports/', AccountReportView.as_view(), name='account-report'),
     path('loans-reports/', LoanReportView.as_view(), name='loan-report'),
     path('transactions=reports/', TransactionReportView.as_view(), name='transaction-report'),

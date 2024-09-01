@@ -9,24 +9,26 @@
     <div class="card shadow-sm rounded-3">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="card-title mb-0">{{ person.full_name }}</h4>
-            <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="material-icons">delete</i>
-            </button>
+            <div class="btn-group">
+                <a href="{% url 'accounts:person_update' person.id %}" class="btn btn-outline-light btn-sm me-1">
+                    <i class="material-icons">edit</i>
+                </a>
+                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="material-icons">delete</i>
+                </button>
+            </div>
         </div>
         <div class="card-body">
-            <div class="mb-4">
-                <div class="d-flex flex-column flex-md-row">
-                    <div class="me-md-5">
-                        <p><strong>Name:</strong> {{ person.first_name }} {{ person.last_name }}</p>
-                        <p><strong>Email:</strong> {{ person.email }}</p>
-                        <p><strong>Date of Birth:</strong> {{ person.date_of_birth|date:"F j, Y" }}</p>
-                        <p><strong>Address:</strong> {{ person.address }}</p>
-                    </div>
-                </div>
-            </div>
+            <h2 class="h5 mb-4">Person Information</h2>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Name:</strong> {{ person.first_name }} {{ person.last_name }}</li>
+                <li class="list-group-item"><strong>Email:</strong> {{ person.email }}</li>
+                <li class="list-group-item"><strong>Date of Birth:</strong> {{ person.date_of_birth|date:"F j, Y" }}</li>
+                <li class="list-group-item"><strong>Address:</strong> {{ person.address }}</li>
+            </ul>
 
-            <h2 class="h5">Accounts</h2>
-            <a href="{% url 'account_create' %}" class="btn btn-success mb-3">
+            <h2 class="h5 mt-4 mb-3">Accounts</h2>
+            <a href="{% url 'accounts:account_create' %}" class="btn btn-success mb-3">
                 <i class="material-icons">add_circle</i> Add Account
             </a>
 
@@ -61,13 +63,13 @@
                             <td>{{ account.interest_rate }}%</td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <a href="{% url 'account_detail' account.id %}" class="btn btn-outline-info btn-sm me-1" title="View Details" aria-label="View Account {{ account.account_number }}">
+                                    <a href="{% url 'accounts:account_detail' account.id %}" class="btn btn-outline-info btn-sm me-1" title="View Details" aria-label="View Account {{ account.account_number }}">
                                         <i class="material-icons">visibility</i>
                                     </a>
-                                    <a href="{% url 'account_update' account.id %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Account" aria-label="Edit Account {{ account.account_number }}">
+                                    <a href="{% url 'accounts:account_update' account.id %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Account" aria-label="Edit Account {{ account.account_number }}">
                                         <i class="material-icons">edit</i>
                                     </a>
-                                    <form action="{% url 'account_delete' account.id %}" method="post" class="d-inline">
+                                    <form action="{% url 'accounts:account_delete' account.id %}" method="post" class="d-inline">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-outline-danger btn-sm delete-button" title="Delete Account" aria-label="Delete Account {{ account.account_number }}">
                                             <i class="material-icons">delete</i>
@@ -83,15 +85,11 @@
             {% else %}
             <p class="text-muted">No accounts available.</p>
             {% endif %}
-
-            <div class="mt-4 d-flex justify-content-between">
-                <a href="{% url 'person_update' person.id %}" class="btn btn-outline-warning">
-                    <i class="material-icons">edit</i> Edit Person
-                </a>
-                <a href="{% url 'person_list' %}" class="btn btn-outline-secondary">
-                    <i class="material-icons">arrow_back</i> Back to List
-                </a>
-            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{% url 'accounts:person_list' %}" class="btn btn-outline-secondary">
+                <i class="material-icons">arrow_back</i> Back to List
+            </a>
         </div>
     </div>
 </div>
@@ -108,7 +106,7 @@
                 <p>Are you sure you want to delete {{ person.full_name }}? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <form action="{% url 'person_delete' person.id %}" method="post" class="d-inline">
+                <form action="{% url 'accounts:person_delete' person.id %}" method="post" class="d-inline">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Delete</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

@@ -9,7 +9,7 @@
     <!-- Add Account Button -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <p class="lead text-muted">List of registered accounts in the system.</p>
-        <a href="{% url 'account_create' %}" class="btn btn-success btn-lg">
+        <a href="{% url 'accounts:account_create' %}" class="btn btn-success btn-lg">
             <i class="material-icons align-middle">account_balance_wallet</i> Add Account
         </a>
     </div>
@@ -40,11 +40,11 @@
                             {% for loan in account.loans.all %}
                             <li>
                                 Loan ID: {{ loan.id }} - Status: {{ loan.status }} - Amount: {{ loan.amount|floatformat:2 }}
-                                <a href="{% url 'loan_detail' loan.pk %}" class="btn btn-outline-info btn-sm" title="View Loan Details" aria-label="View Loan {{ loan.id }}">
+                                <a href="{% url 'loans:loan_detail' loan.pk %}" class="btn btn-outline-info btn-sm" title="View Loan Details" aria-label="View Loan {{ loan.id }}">
                                     <i class="material-icons">visibility</i>
                                 </a>
                                 {% if loan.status != 'repaid' %}
-                                <a href="{% url 'loan_repay' loan.pk %}" class="btn btn-outline-success btn-sm" title="Repay Loan" aria-label="Repay Loan {{ loan.id }}">
+                                <a href="{% url 'loans:loanrepayment_detail' loan.pk %}" class="btn btn-outline-success btn-sm" title="Repay Loan" aria-label="Repay Loan {{ loan.id }}">
                                     <i class="material-icons">payment</i>
                                 </a>
                                 {% endif %}
@@ -56,10 +56,10 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{% url 'account_detail' account.pk %}" class="btn btn-outline-info btn-sm" title="View Account Details" aria-label="View Account {{ account.account_number }}">
+                        <a href="{% url 'accounts:account_detail' account.pk %}" class="btn btn-outline-info btn-sm" title="View Account Details" aria-label="View Account {{ account.account_number }}">
                             <i class="material-icons">visibility</i>
                         </a>
-                        <a href="{% url 'account_update' account.pk %}" class="btn btn-outline-warning btn-sm" title="Edit Account" aria-label="Edit Account {{ account.account_number }}">
+                        <a href="{% url 'accounts:account_update' account.pk %}" class="btn btn-outline-warning btn-sm" title="Edit Account" aria-label="Edit Account {{ account.account_number }}">
                             <i class="material-icons">edit</i>
                         </a>
                         <button type="button" class="btn btn-outline-danger btn-sm delete-button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-account-id="{{ account.pk }}" title="Delete Account" aria-label="Delete Account {{ account.account_number }}">
@@ -100,7 +100,7 @@
     {% endif %}
     {% else %}
         <div class="alert alert-info" role="alert">
-            No accounts found. <a href="{% url 'account_create' %}" class="alert-link">Add a new account</a>.
+            No accounts found. <a href="{% url 'accounts:account_create' %}" class="alert-link">Add a new account</a>.
         </div>
     {% endif %}
 
@@ -136,13 +136,13 @@
                         <td>{{ account.interest_rate }}%</td>
                         <td>
                             <div class="d-flex justify-content-center">
-                                <a href="{% url 'account_detail' account.id %}" class="btn btn-outline-info btn-sm me-1" title="View Details" aria-label="View Account {{ account.account_number }}">
+                                <a href="{% url 'accounts:account_detail' account.id %}" class="btn btn-outline-info btn-sm me-1" title="View Details" aria-label="View Account {{ account.account_number }}">
                                     <i class="material-icons">visibility</i>
                                 </a>
-                                <a href="{% url 'account_update' account.id %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Account" aria-label="Edit Account {{ account.account_number }}">
+                                <a href="{% url 'accounts:account_update' account.id %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Account" aria-label="Edit Account {{ account.account_number }}">
                                     <i class="material-icons">edit</i>
                                 </a>
-                                <form action="{% url 'account_delete' account.id %}" method="post" class="d-inline">
+                                <form action="{% url 'accounts:account_delete' account.id %}" method="post" class="d-inline">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-outline-danger btn-sm delete-button" title="Delete Account" aria-label="Delete Account {{ account.account_number }}">
                                         <i class="material-icons">delete</i>
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var button = event.relatedTarget;
         var accountId = button.getAttribute('data-account-id');
         var form = deleteModal.querySelector('#deleteForm');
-        form.action = "{% url 'account_delete' '' %}".replace('','') + '/' + accountId;
+        form.action = "{% url 'accounts:account_delete' '' %}".replace('','') + '/' + accountId;
         document.getElementById('account_id').value = accountId;
     });
 });

@@ -7,7 +7,7 @@
     <h1 class="text-center display-4 mb-4" style="color: #333;">Manage Persons</h1>
 
     <!-- Search Bar -->
-    <form method="GET" action="{% url 'person_list' %}" class="form-inline mb-3">
+    <form method="GET" action="{% url 'accounts:person_list' %}" class="form-inline mb-3">
         <div class="input-group">
             <input name="q" class="form-control" type="search" placeholder="Search by name or email" aria-label="Search" value="{{ request.GET.q }}">
             <button class="btn btn-outline-success" type="submit">
@@ -18,7 +18,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <p class="lead text-muted">List of registered persons in the system.</p>
-        <a href="{% url 'person_create' %}" class="btn btn-success btn-lg">
+        <a href="{% url 'accounts:person_create' %}" class="btn btn-success btn-lg">
             <i class="material-icons align-middle">person_add</i> Add Person
         </a>
     </div>
@@ -41,10 +41,10 @@
                     <td>{{ person.email }}</td>
                     <td>{{ person.date_of_birth|date:"F j, Y" }}</td>
                     <td>
-                        <a href="{% url 'person_detail' person.pk %}" class="btn btn-outline-info btn-sm" title="View Details" aria-label="View {{ person.first_name }} {{ person.last_name }}">
+                        <a href="{% url 'accounts:person_detail' person.pk %}" class="btn btn-outline-info btn-sm" title="View Details" aria-label="View {{ person.first_name }} {{ person.last_name }}">
                             <i class="material-icons">visibility</i>
                         </a>
-                        <a href="{% url 'person_update' person.pk %}" class="btn btn-outline-warning btn-sm" title="Edit Person" aria-label="Edit {{ person.first_name }} {{ person.last_name }}">
+                        <a href="{% url 'accounts:person_update' person.pk %}" class="btn btn-outline-warning btn-sm" title="Edit Person" aria-label="Edit {{ person.first_name }} {{ person.last_name }}">
                             <i class="material-icons">edit</i>
                         </a>
                         <button type="button" class="btn btn-outline-danger btn-sm delete-button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-person-id="{{ person.pk }}" title="Delete Person" aria-label="Delete {{ person.first_name }} {{ person.last_name }}">
@@ -85,7 +85,7 @@
     {% endif %}
     {% else %}
     <div class="alert alert-info" role="alert">
-        No persons found. <a href="{% url 'person_create' %}" class="alert-link">Add a new person</a>.
+        No persons found. <a href="{% url 'accounts:person_create' %}" class="alert-link">Add a new person</a>.
     </div>
     {% endif %}
 </div>
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var button = event.relatedTarget;
         var personId = button.getAttribute('data-person-id');
         var form = deleteModal.querySelector('#deleteForm');
-        form.action = "{% url 'person_delete' '' %}".replace('','') + '/' + personId;
+        form.action = "{% url 'accounts:person_delete' '' %}".replace('','') + '/' + personId;
         document.getElementById('person_id').value = personId;
     });
 });

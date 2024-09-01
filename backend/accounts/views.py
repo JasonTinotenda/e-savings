@@ -16,13 +16,13 @@ class PersonCreateView(CreateView):
     model = Person
     form_class = PersonForm
     template_name = 'person_form.html'
-    success_url = reverse_lazy('person_list')
+    success_url = reverse_lazy('accounts:person_list')
 
 class PersonUpdateView(UpdateView):
     model = Person
     form_class = PersonForm
     template_name = 'person_form.html'
-    success_url = reverse_lazy('person_list')
+    success_url = reverse_lazy('accounts:person_list')
 
 class PersonDeleteView(DeleteView):
     model = Person
@@ -47,13 +47,13 @@ class AccountCreateView(CreateView):
     model = Account
     form_class = AccountForm
     template_name = 'account_form.html'
-    success_url = reverse_lazy('account_list')
+    success_url = reverse_lazy('accounts:account_list')
 
 class AccountUpdateView(UpdateView):
     model = Account
     form_class = AccountForm
     template_name = 'account_form.html'
-    success_url = reverse_lazy('account_list')
+    success_url = reverse_lazy('accounts:account_list')
 
 class AccountDeleteView(DeleteView):
     model = Account

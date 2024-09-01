@@ -51,7 +51,7 @@
                     <button type="submit" class="btn btn-primary btn-lg" style="flex: 1; max-width: 200px;">
                         <i class="material-icons align-middle">save</i> {{ form.instance.pk|yesno:"Update,Create" }}
                     </button>
-                    <a href="{% url 'person_list' %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
+                    <a href="{% url 'accounts:person_list' %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
                         <i class="material-icons align-middle">arrow_back</i> Cancel
                     </a>
                 </div>

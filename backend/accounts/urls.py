@@ -4,6 +4,8 @@ from .views import (
     AccountListView, AccountDetailView, AccountCreateView, AccountUpdateView, AccountDeleteView
 )
 
+app_name = 'accounts'
+
 urlpatterns = [
     # Person URLs
     path('persons/', PersonListView.as_view(), name='person_list'),
