@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Reports</title>
+</head>
+<body>
+    <h1>Loan Reports</h1>
+    <p>Total Loans: {{ total_loans }}</p>
+    <ul>
+        {% for loan in loans %}
+            <li>
+                <a href="{% url 'detailed-loan-report' loan.pk %}">
+                    Loan ID: {{ loan.id }} - Account: {{ loan.account.account_number }} - Amount: {{ loan.amount }} - Status: {{ loan.status }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

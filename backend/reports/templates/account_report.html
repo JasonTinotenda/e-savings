@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Reports</title>
+</head>
+<body>
+    <h1>Account Reports</h1>
+    <ul>
+        {% for account in accounts %}
+            <li>
+                <a href="{% url 'detailed-account-report' account.pk %}">
+                    {{ account.person }} - {{ account.account_number }}: {{ account.balance }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

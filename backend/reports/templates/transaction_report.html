@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction Reports</title>
+</head>
+<body>
+    <h1>Transaction Reports</h1>
+    <p>Total Deposits: {{ total_deposits }}</p>
+    <p>Total Withdrawals: {{ total_withdrawals }}</p>
+    <ul>
+        {% for transaction in transactions %}
+            <li>
+                {{ transaction.transaction_type.title }} of {{ transaction.amount }} on {{ transaction.date }} (Account: {{ transaction.account.account_number }})
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

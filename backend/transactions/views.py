@@ -1,100 +1,45 @@
-from rest_framework.views import APIView
-from rest_framework import status
-from drf_spectacular.utils import extend_schema
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 from .models import Transaction
-from .serializers import TransactionSerializer
-from core.views import StandardizedResponseMixin
+from .forms import TransactionForm
 
+class TransactionListView(ListView):
+    model = Transaction
+    template_name = 'transactions/transaction_list.html'
+    context_object_name = 'transactions'
 
+class TransactionDetailView(DetailView):
+    model = Transaction
+    template_name = 'transactions/transaction_detail.html'
+    context_object_name = 'transaction'
 
-class TransactionApiView(StandardizedResponseMixin, APIView):
+class TransactionCreateView(CreateView):
+    model = Transaction
+    form_class = TransactionForm
+    template_name = 'transactions/transaction_form.html'
+    success_url = reverse_lazy('transaction_list')
 
-    @extend_schema(
-        responses={200: TransactionSerializer(many=True)},
-    )
-    def get(self, request, *args, **kwargs):
-        objects = Transaction.objects.all()
-        serializer = TransactionSerializer(objects, many=True)
-        return self.success_response(serializer.data)
+    def form_valid(self, form):
+        # Additional processing if needed before saving
+        return super().form_valid(form)
 
-    @extend_schema(request=TransactionSerializer, responses={201: TransactionSerializer})
-    def post(self, request, *args, **kwargs):
-        serializer = TransactionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data, status_code=status.HTTP_201_CREATED)
-        return self.error_response(serializer.errors)
+class TransactionUpdateView(UpdateView):
+    model = Transaction
+    form_class = TransactionForm
+    template_name = 'transactions/transaction_form.html'
+    success_url = reverse_lazy('transaction_list')
 
-class TransactionDetailApiView(StandardizedResponseMixin, APIView):
-    
-    def get_object(self, pk):
-        try:
-            return Transaction.objects.get(pk=pk)
-        except Transaction.DoesNotExist:
-            return None
-    
-    @extend_schema(
-        responses={200: TransactionSerializer},
-    )
-    def get(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = TransactionSerializer(transaction)
-        return self.success_response(serializer.data)
+    def form_valid(self, form):
+        # Additional processing if needed before saving
+        return super().form_valid(form)
 
-    @extend_schema(request=TransactionSerializer, responses={200: TransactionSerializer})
-    def put(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = TransactionSerializer(transaction, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data)
-        return self.error_response(serializer.errors)
+class TransactionDeleteView(DeleteView):
+    model = Transaction
+    template_name = 'transactions/transaction_confirm_delete.html'
+    success_url = reverse_lazy('transaction_list')
 
-    @extend_schema(responses={204: None})
-    def delete(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        transaction.delete()
-        return self.success_response(None, status_code=status.HTTP_204_NO_CONTENT)
-
-class TransactionDetailApiView(StandardizedResponseMixin, APIView):
-    
-    def get_object(self, pk):
-        try:
-            return Transaction.objects.get(pk=pk)
-        except Transaction.DoesNotExist:
-            return None
-    
-    @extend_schema(
-        responses={200: TransactionSerializer},
-    )
-    def get(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = TransactionSerializer(transaction)
-        return self.success_response(serializer.data)
-
-    @extend_schema(request=TransactionSerializer, responses={200: TransactionSerializer})
-    def put(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        serializer = TransactionSerializer(transaction, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response(serializer.data)
-        return self.error_response(serializer.errors)
-
-    @extend_schema(responses={204: None})
-    def delete(self, request, pk, *args, **kwargs):
-        transaction = self.get_object(pk)
-        if transaction is None:
-            return self.error_response("Transaction not found", status_code=status.HTTP_404_NOT_FOUND)
-        transaction.delete()
-        return self.success_response(None, status_code=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, *args, **kwargs):
+        # Handle deletion of the object
+        response = super().delete(request, *args, **kwargs)
+        return response

@@ -24,8 +24,4 @@ urlpatterns = [
     path('repayments/create/', views.LoanRepaymentCreateView.as_view(), name='loanrepayment_create'),
     path('repayments/<int:pk>/update/', views.LoanRepaymentUpdateView.as_view(), name='loanrepayment_update'),
     path('repayments/<int:pk>/delete/', views.LoanRepaymentDeleteView.as_view(), name='loanrepayment_delete'),
-
-    # AuditLog URLs
-    path('auditlogs/', views.AuditLogListView.as_view(), name='auditlog_list'),
-    path('auditlogs/<int:pk>/', views.AuditLogDetailView.as_view(), name='auditlog_detail'),
 ]

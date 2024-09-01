@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.urls import reverse_lazy
-from .models import LoanType, Loan, LoanRepayment, AuditLog
+from .models import LoanType, Loan, LoanRepayment
 from .forms import LoanTypeForm, LoanForm, LoanRepaymentForm
 
 # LoanType Views
@@ -106,8 +106,15 @@ class LoanRepaymentCreateView(CreateView):
     success_url = reverse_lazy('loans:loanrepayment_list')
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+        # Deduct repayment amount from the loan and handle loan status
+        loan = form.instance.loan
+        if loan.amount <= 0:
+            loan.status = 'repaid'
+        loan.save()
+
         messages.success(self.request, 'Loan Repayment created successfully.')
-        return super().form_valid(form)
+        return response
 
 class LoanRepaymentUpdateView(UpdateView):
     model = LoanRepayment
@@ -116,8 +123,15 @@ class LoanRepaymentUpdateView(UpdateView):
     success_url = reverse_lazy('loans:loanrepayment_list')
 
     def form_valid(self, form):
+        response = super().form_valid(form)
+        # Ensure repayment amount and status are correctly updated
+        loan = form.instance.loan
+        if loan.amount <= 0:
+            loan.status = 'repaid'
+        loan.save()
+
         messages.success(self.request, 'Loan Repayment updated successfully.')
-        return super().form_valid(form)
+        return response
 
 class LoanRepaymentDeleteView(DeleteView):
     model = LoanRepayment
@@ -125,20 +139,10 @@ class LoanRepaymentDeleteView(DeleteView):
     success_url = reverse_lazy('loans:loanrepayment_list')
 
     def delete(self, request, *args, **kwargs):
+        repayment = self.get_object()
+        loan = repayment.loan
+        # Optionally, handle loan amount and status adjustment here if needed
+        super().delete(request, *args, **kwargs)
+        
         messages.success(request, 'Loan Repayment deleted successfully.')
-        return super().delete(request, *args, **kwargs)
-
-# AuditLog Views
-
-class AuditLogListView(ListView):
-    model = AuditLog
-    template_name = 'auditlog_list.html'
-    context_object_name = 'auditlogs'
-
-class AuditLogDetailView(DetailView):
-    model = AuditLog
-    template_name = 'auditlog_detail.html'
-    context_object_name = 'auditlog'
-
-
-# Add additional forms as needed
+        return redirect(self.success_url)
