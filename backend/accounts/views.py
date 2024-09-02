@@ -2,9 +2,10 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Person, Account
 from .forms import PersonForm, AccountForm
+from core.views import BaseLoggedInView
 
 # Person Views
-class PersonListView(ListView):
+class PersonListView(BaseLoggedInView, ListView):
     model = Person
     template_name = 'person_list.html'
 
@@ -30,7 +31,7 @@ class PersonDeleteView(DeleteView):
     success_url = reverse_lazy('person_list')
 
 
-class AccountListView(ListView):
+class AccountListView(BaseLoggedInView, ListView):
     model = Account
     template_name = 'account_list.html'
     context_object_name = 'accounts'
@@ -58,4 +59,4 @@ class AccountUpdateView(UpdateView):
 class AccountDeleteView(DeleteView):
     model = Account
     template_name = 'account_confirm_delete.html'
-    success_url = reverse_lazy('account_list')
+    success_url = reverse_lazy('accounts:account_list')
