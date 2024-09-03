@@ -9,17 +9,17 @@ class PersonListView(BaseLoggedInView, ListView):
     model = Person
     template_name = 'person_list.html'
 
-class PersonDetailView(DetailView):
+class PersonDetailView(BaseLoggedInView, DetailView):
     model = Person
     template_name = 'person_detail.html'
 
-class PersonCreateView(CreateView):
+class PersonCreateView(BaseLoggedInView, CreateView):
     model = Person
     form_class = PersonForm
     template_name = 'person_form.html'
     success_url = reverse_lazy('accounts:person_list')
 
-class PersonUpdateView(UpdateView):
+class PersonUpdateView(BaseLoggedInView, UpdateView):
     model = Person
     form_class = PersonForm
     template_name = 'person_form.html'
@@ -35,22 +35,17 @@ class AccountListView(BaseLoggedInView, ListView):
     model = Account
     template_name = 'account_list.html'
     context_object_name = 'accounts'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-class AccountDetailView(DetailView):
+class AccountDetailView(BaseLoggedInView, DetailView):
     model = Account
     template_name = 'account_detail.html'
 
-class AccountCreateView(CreateView):
+class AccountCreateView(BaseLoggedInView, CreateView):
     model = Account
     form_class = AccountForm
     template_name = 'account_form.html'
     success_url = reverse_lazy('accounts:account_list')
 
-class AccountUpdateView(UpdateView):
+class AccountUpdateView(BaseLoggedInView, UpdateView):
     model = Account
     form_class = AccountForm
     template_name = 'account_form.html'

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'esavings',
     'accounts',
     'loans',
+    'reports',
     'corsheaders',
     'drf_spectacular',
     'core',

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}{{ form.instance.pk|yesno:"Edit Transaction,Add Transaction" }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Card for form layout with max-width -->
+    <div class="card shadow-lg rounded-3 border-light mx-auto" style="max-width: 800px;">
+        <div class="card-header bg-primary text-white">
+            <h4 class="card-title mb-0">{{ form.instance.pk|yesno:"Edit Transaction,Add Transaction" }}</h4>
+        </div>
+        <div class="card-body">
+            <!-- Form starts here -->
+            <form method="post">
+                {% csrf_token %}
+                                
+                <!-- Account Field -->
+                <div class="mb-2">
+                    <label for="id_status" class="form-label">Account</label>
+                    {{ form.account|as_crispy_field }}
+                </div>
+                
+                <!-- Amount Field -->
+                <div class="mb-2">
+                    <label for="id_amount" class="form-label">Amount</label>
+                    {{ form.amount|as_crispy_field }}
+                </div>
+                
+                <!-- Transaction Description Field -->
+                <div class="mb-2">
+                    <label for="id_description" class="form-label">Description</label>
+                    {{ form.transaction_type|as_crispy_field }}
+                </div>
+                <!-- Date Field -->
+                <div class="mb-2">
+                    <label for="id_date" class="form-label">Date</label>
+                    {{ form.date|as_crispy_field }}
+                </div>
+                
+                <!-- Buttons for Submit and Cancel -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" style="flex: 1; max-width: 200px;">
+                        <i class="material-icons align-middle">save</i> {{ form.instance.pk|yesno:"Update,Create" }}
+                    </button>
+                    <a href="{% url 'transactions:transaction_list' %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
+                        <i class="material-icons align-middle">arrow_back</i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

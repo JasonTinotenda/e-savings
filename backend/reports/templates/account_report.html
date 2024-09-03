@@ -1,19 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Account Reports</title>
-</head>
-<body>
-    <h1>Account Reports</h1>
-    <ul>
-        {% for account in accounts %}
-            <li>
-                <a href="{% url 'detailed-account-report' account.pk %}">
-                    {{ account.person }} - {{ account.account_number }}: {{ account.balance }}
+{% extends 'base.html' %}
+
+{% block title %}Account Report{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center display-4 mb-4" style="color: #333;">Account Report</h1>
+
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'reports:account_report' %}" class="form-inline mb-3">
+        <div class="input-group">
+            <input name="q" class="form-control" type="search" placeholder="Search by account holder name" aria-label="Search" value="{{ request.GET.q }}">
+            <button class="btn btn-outline-success" type="submit">
+                <i class="material-icons">search</i>
+            </button>
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="lead text-muted">List of accounts with their balances.</p>
+    </div>
+
+    {% if accounts %}
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm">
+            <thead class="thead-dark">
+                <tr class="text-center">
+                    <th scope="col">ID</th>
+                    <th scope="col">Account Holder</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in accounts %}
+                <tr class="align-middle text-center">
+                    <td>{{ account.id }}</td>
+                    <td>{{ account.person}}</td>
+                    <td>{{ account.balance }}</td>
+                    <td>
+                        <a href="{% url 'reports:detailed_account_report' account.id %}" class="btn btn-outline-info btn-sm" title="View Details" aria-label="View account {{ account.id }}">
+                            <i class="material-icons">visibility</i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No accounts found.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

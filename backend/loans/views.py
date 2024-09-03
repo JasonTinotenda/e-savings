@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.urls import reverse_lazy
+
+from core.views import BaseLoggedInView
 from .models import LoanType, Loan, LoanRepayment
 from .forms import LoanTypeForm, LoanForm, LoanRepaymentForm
 
@@ -48,17 +50,17 @@ class LoanTypeDeleteView(DeleteView):
 
 # Loan Views
 
-class LoanListView(ListView):
+class LoanListView(BaseLoggedInView, ListView):
     model = Loan
     template_name = 'loan_list.html'
     context_object_name = 'loans'
 
-class LoanDetailView(DetailView):
+class LoanDetailView(BaseLoggedInView, DetailView):
     model = Loan
     template_name = 'loan_detail.html'
     context_object_name = 'loan'
 
-class LoanCreateView(CreateView):
+class LoanCreateView(BaseLoggedInView, CreateView):
     model = Loan
     form_class = LoanForm
     template_name = 'loan_form.html'
@@ -68,7 +70,7 @@ class LoanCreateView(CreateView):
         messages.success(self.request, 'Loan created successfully.')
         return super().form_valid(form)
 
-class LoanUpdateView(UpdateView):
+class LoanUpdateView(BaseLoggedInView, UpdateView):
     model = Loan
     form_class = LoanForm
     template_name = 'loan_form.html'
@@ -89,17 +91,17 @@ class LoanDeleteView(DeleteView):
 
 # LoanRepayment Views
 
-class LoanRepaymentListView(ListView):
+class LoanRepaymentListView(BaseLoggedInView, ListView):
     model = LoanRepayment
     template_name = 'loanrepayment_list.html'
     context_object_name = 'loanrepayments'
 
-class LoanRepaymentDetailView(DetailView):
+class LoanRepaymentDetailView(BaseLoggedInView, DetailView):
     model = LoanRepayment
     template_name = 'loanrepayment_detail.html'
     context_object_name = 'loanrepayment'
 
-class LoanRepaymentCreateView(CreateView):
+class LoanRepaymentCreateView(BaseLoggedInView, CreateView):
     model = LoanRepayment
     form_class = LoanRepaymentForm
     template_name = 'loanrepayment_form.html'
@@ -116,7 +118,7 @@ class LoanRepaymentCreateView(CreateView):
         messages.success(self.request, 'Loan Repayment created successfully.')
         return response
 
-class LoanRepaymentUpdateView(UpdateView):
+class LoanRepaymentUpdateView(BaseLoggedInView, UpdateView):
     model = LoanRepayment
     form_class = LoanRepaymentForm
     template_name = 'loanrepayment_form.html'

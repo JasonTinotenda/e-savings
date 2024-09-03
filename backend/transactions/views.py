@@ -1,34 +1,39 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from core.views import BaseLoggedInView
 from .models import Transaction
 from .forms import TransactionForm
 
-class TransactionListView(ListView):
+class TransactionListView(BaseLoggedInView, ListView):
     model = Transaction
-    template_name = 'transactions/transaction_list.html'
+    template_name = 'transaction_list.html'
     context_object_name = 'transactions'
 
-class TransactionDetailView(DetailView):
+class TransactionDetailView(BaseLoggedInView, DetailView):
     model = Transaction
-    template_name = 'transactions/transaction_detail.html'
+    template_name = 'transaction_detail.html'
     context_object_name = 'transaction'
 
-class TransactionCreateView(CreateView):
+class TransactionCreateView(BaseLoggedInView, CreateView):
     model = Transaction
-    form_class = TransactionForm
-    template_name = 'transactions/transaction_form.html'
-    success_url = reverse_lazy('transaction_list')
+    template_name = 'transaction_form.html'
+    fields = ['account', 'amount', 'transaction_type', 'date']
 
     def form_valid(self, form):
-        # Additional processing if needed before saving
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        # Redirect to the transaction list view after creation
+        return HttpResponseRedirect(self.get_success_url())
 
-class TransactionUpdateView(UpdateView):
+    def get_success_url(self):
+        return reverse('transactions:transaction_list')
+
+class TransactionUpdateView(BaseLoggedInView, UpdateView):
     model = Transaction
     form_class = TransactionForm
-    template_name = 'transactions/transaction_form.html'
-    success_url = reverse_lazy('transaction_list')
+    template_name = 'transaction_form.html'
+    success_url = reverse_lazy('transactions:transaction_list')
 
     def form_valid(self, form):
         # Additional processing if needed before saving
@@ -36,10 +41,7 @@ class TransactionUpdateView(UpdateView):
 
 class TransactionDeleteView(DeleteView):
     model = Transaction
-    template_name = 'transactions/transaction_confirm_delete.html'
-    success_url = reverse_lazy('transaction_list')
+    template_name = 'transaction_confirm_delete.html'
+    success_url = reverse_lazy('transactions:transaction_list')
 
-    def delete(self, request, *args, **kwargs):
-        # Handle deletion of the object
-        response = super().delete(request, *args, **kwargs)
-        return response
+    
