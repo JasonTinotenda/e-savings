@@ -13,7 +13,7 @@ class Transaction(models.Model):
         ('withdraw', 'Withdraw'),
     )
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
-    date = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.transaction_type.title()} of {self.amount} on {self.account.account_number}"

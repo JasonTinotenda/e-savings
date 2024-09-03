@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.urls import reverse_lazy
-
+from django.db.models import Count
 from core.views import BaseLoggedInView
 from .models import LoanType, Loan, LoanRepayment
 from .forms import LoanTypeForm, LoanForm, LoanRepaymentForm
@@ -148,3 +148,6 @@ class LoanRepaymentDeleteView(DeleteView):
         
         messages.success(request, 'Loan Repayment deleted successfully.')
         return redirect(self.success_url)
+
+
+
