@@ -23,3 +23,9 @@ social-auth-app-django
 social-auth-core
 sqlparse
 urllib3
+python-decouple
+django-cors-headers
+drf-spectacular
+django-crispy-forms
+crispy-bootstrap5
+black
