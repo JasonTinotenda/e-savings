@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center display-4 mb-4" style="color: #333;">Manage Transactions</h1>
+
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'transactions:transaction_list' %}" class="form-inline mb-3">
+        <div class="input-group">
+            <input name="q" class="form-control" type="search" placeholder="Search by description or amount" aria-label="Search" value="{{ request.GET.q }}">
+            <button class="btn btn-outline-success" type="submit">
+                <i class="material-icons">search</i>
+            </button>
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="lead text-muted">List of transactions in the system.</p>
+        <a href="{% url 'transactions:transaction_create' %}" class="btn btn-success btn-lg">
+            <i class="material-icons align-middle">add_circle</i> Add Transaction
+        </a>
+    </div>
+
+    {% if transactions %}
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm">
+            <thead class="thead-dark">
+                <tr class="text-center">
+                    <th scope="col">ID</th>
+                    <th scope="col">Account</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr class="align-middle text-center">
+                    <td>{{ transaction.id }}</td>
+                    <td>{{ transaction.account }}</td>
+                    <td>{{ transaction.transaction_type }}</td>
+                    <td>${{ transaction.amount }}</td>
+                    <td>{{ transaction.date|date:"F j, Y" }}</td>
+                    <td>
+                        <a href="{% url 'transactions:transaction_detail' transaction.id %}" class="btn btn-outline-info btn-sm" title="View Details" aria-label="View Transaction ID {{ transaction.id }}">
+                            <i class="material-icons">visibility</i>
+                        </a>
+                        <a href="{% url 'transactions:transaction_update' transaction.id %}" class="btn btn-outline-warning btn-sm" title="Edit Transaction" aria-label="Edit Transaction ID {{ transaction.id }}">
+                            <i class="material-icons">edit</i>
+                        </a>
+                        <!-- Removed delete button -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No transactions found. <a href="{% url 'transactions:transaction_create' %}" class="alert-link">Add a new transaction</a>.
+    </div>
+    {% endif %}
+</div>
+
+<!-- Removed Delete Modal -->
+{% endblock %}

@@ -13,9 +13,7 @@
                 <a href="{% url 'loans:loan_update' loan.pk %}" class="btn btn-outline-light btn-sm me-1">
                     <i class="material-icons">edit</i>
                 </a>
-                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                    <i class="material-icons">delete</i>
-                </button>
+                <!-- Removed delete button -->
             </div>
         </div>
         <div class="card-body">
@@ -56,9 +54,7 @@
                                 <a href="{% url 'loans:loanrepayment_update' repayment.pk %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Repayment">
                                     <i class="material-icons">edit</i>
                                 </a>
-                                <a href="{% url 'loans:loanrepayment_delete' repayment.pk %}" class="btn btn-outline-danger btn-sm" title="Delete Repayment">
-                                    <i class="material-icons">delete</i>
-                                </a>
+                                <!-- Removed delete button -->
                             </td>
                         </tr>
                         {% empty %}
@@ -73,34 +69,11 @@
             <p class="text-muted">No repayments made.</p>
             {% endif %}
         </div>
-    </div>
-
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete Loan #{{ loan.id }}? This action cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <form action="{% url 'loans:loan_delete' loan.pk %}" method="post" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </form>
-                </div>
-            </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{% url 'loans:loan_list' %}" class="btn btn-outline-secondary">
+                <i class="material-icons">arrow_back</i> Back to List
+            </a>
         </div>
-    </div>
-
-    <div class="mt-4 d-flex justify-content-between">
-        <a href="{% url 'loans:loan_list' %}" class="btn btn-outline-secondary">
-            <i class="material-icons">arrow_back</i> Back to List
-        </a>
     </div>
 </div>
 {% endblock %}

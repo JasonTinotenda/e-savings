@@ -13,9 +13,7 @@
                 <a href="{% url 'accounts:person_update' person.id %}" class="btn btn-outline-light btn-sm me-1">
                     <i class="material-icons">edit</i>
                 </a>
-                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                    <i class="material-icons">delete</i>
-                </button>
+                <!-- Removed delete button -->
             </div>
         </div>
         <div class="card-body">
@@ -69,12 +67,7 @@
                                     <a href="{% url 'accounts:account_update' account.id %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Account" aria-label="Edit Account {{ account.account_number }}">
                                         <i class="material-icons">edit</i>
                                     </a>
-                                    <form action="{% url 'accounts:account_delete' account.id %}" method="post" class="d-inline">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-outline-danger btn-sm delete-button" title="Delete Account" aria-label="Delete Account {{ account.account_number }}">
-                                            <i class="material-icons">delete</i>
-                                        </button>
-                                    </form>
+                                    <!-- Removed delete button -->
                                 </div>
                             </td>
                         </tr>
@@ -94,26 +87,5 @@
     </div>
 </div>
 
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete {{ person.full_name }}? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <form action="{% url 'accounts:person_delete' person.id %}" method="post" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- Removed Delete Modal -->
 {% endblock %}

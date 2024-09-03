@@ -1,21 +1,19 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.db.models import Sum
 from accounts.models import Account
+from core.views import BaseLoggedInView
 from transactions.models import Transaction
 from loans.models import Loan 
 
-class ReportView(View):
-    template_name = 'reports/report.html'
+class ReportView(BaseLoggedInView, View):
+    template_name = 'report.html'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
-class AccountReportView(View):
-    template_name = 'reports/account_report.html'
+class AccountReportView(BaseLoggedInView, View):
+    template_name = 'account_report.html'
 
     def get(self, request, *args, **kwargs):
         accounts = Account.objects.all()
@@ -24,8 +22,8 @@ class AccountReportView(View):
         }
         return render(request, self.template_name, context)
 
-class LoanReportView(View):
-    template_name = 'reports/loan_report.html'
+class LoanReportView(BaseLoggedInView, View):
+    template_name = 'loan_report.html'
 
     def get(self, request, *args, **kwargs):
         loans = Loan.objects.all()
@@ -36,8 +34,8 @@ class LoanReportView(View):
         }
         return render(request, self.template_name, context)
 
-class TransactionReportView(View):
-    template_name = 'reports/transaction_report.html'
+class TransactionReportView(BaseLoggedInView, View):
+    template_name = 'transaction_report.html'
 
     def get(self, request, *args, **kwargs):
         transactions = Transaction.objects.all()
@@ -50,8 +48,8 @@ class TransactionReportView(View):
         }
         return render(request, self.template_name, context)
 
-class DetailedAccountReportView(View):
-    template_name = 'reports/detailed_account_report.html'
+class DetailedAccountReportView(BaseLoggedInView, View):
+    template_name = 'detailed_account_report.html'
 
     def get(self, request, *args, **kwargs):
         account_id = kwargs.get('pk')
@@ -65,8 +63,8 @@ class DetailedAccountReportView(View):
         }
         return render(request, self.template_name, context)
 
-class DetailedLoanReportView(View):
-    template_name = 'reports/detailed_loan_report.html'
+class DetailedLoanReportView(BaseLoggedInView, View):
+    template_name = 'detailed_loan_report.html'
 
     def get(self, request, *args, **kwargs):
         loan_id = kwargs.get('pk')

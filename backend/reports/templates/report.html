@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports Overview{% endblock %}
+
+{% block content %}
+<main class="container mt-5">    
+    <!-- Reports Overview -->
+    <h2 class="display-4 text-center mb-4">Reports Overview</h2>
+    
+    <div class="row">
+        <!-- Account Report Card -->
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card border-primary shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-file-earmark-bar-graph"></i> Account Report
+                </div>
+                <div class="card-body">
+                    <p class="card-text">View detailed account reports including balances and transactions.</p>
+                    <a href="{% url 'reports:account_report' %}" class="btn btn-outline-primary">View Report</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Report Card -->
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card border-success shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-file-earmark-bar-graph"></i> Loan Report
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Access comprehensive loan reports, including approvals and repayments.</p>
+                    <a href="{% url 'reports:loan_report' %}" class="btn btn-outline-success">View Report</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Report Card -->
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card border-info shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-file-earmark-bar-graph"></i> Transaction Report
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Get insights into all transactions, including deposits and withdrawals.</p>
+                    <a href="{% url 'reports:transaction_report' %}" class="btn btn-outline-info">View Report</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- JavaScript for Tooltip Initialization -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    });
+</script>
+{% endblock %}

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'esavings',
     'accounts',
     'loans',
+    'reports',
     'corsheaders',
     'drf_spectacular',
     'core',
@@ -113,6 +114,10 @@ LOGGING = {
 
 
 WSGI_APPLICATION = 'esavings.wsgi.application'
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = '/'
 
 
 # Database

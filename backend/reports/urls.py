@@ -5,9 +5,10 @@ app_name = 'reports'
 
 urlpatterns = [
     path('', ReportView.as_view(), name='report_list'),
-    path('accounts-reports/', AccountReportView.as_view(), name='account-report'),
-    path('loans-reports/', LoanReportView.as_view(), name='loan-report'),
-    path('transactions=reports/', TransactionReportView.as_view(), name='transaction-report'),
-    path('accounts-reports/<int:pk>/', DetailedAccountReportView.as_view(), name='detailed-account-report'),
-    path('loans-reports/<int:pk>/', DetailedLoanReportView.as_view(), name='detailed-loan-report'),
+    path('account/', AccountReportView.as_view(), name='account_report'),
+    path('loan/', LoanReportView.as_view(), name='loan_report'),
+    path('transaction/', TransactionReportView.as_view(), name='transaction_report'),
+    path('account/<int:pk>/', DetailedAccountReportView.as_view(), name='detailed_account_report'),
+    path('loan/<int:pk>/', DetailedLoanReportView.as_view(), name='detailed_loan_report'),
 ]
+
