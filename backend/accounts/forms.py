@@ -11,8 +11,8 @@ class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = ['person', 'account_number', 'balance', 'interest_rate']
-    
-    def __init__(self, *args, **kwargs):
-        super(AccountForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_show_labels = False 
+
+    # def __init__(self, *args, **kwargs):
+    #     super(AccountForm, self).__init__(*args, **kwargs)
+    #     self.helper = FormHelper()
+    #     self.helper.form_show_labels = False
