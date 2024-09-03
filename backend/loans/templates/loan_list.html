@@ -32,6 +32,7 @@
                     <th scope="col">Borrower</th>
                     <th scope="col">Loan Type</th>
                     <th scope="col">Amount</th>
+                    <th scope="col">Total Amount</th>
                     <th scope="col">Status</th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -43,6 +44,7 @@
                     <td>{{ loan.account }}</a></td>
                     <td>{{ loan.loan_type.name }}</td>
                     <td>${{ loan.amount|floatformat:2 }}</td>
+                    <td>${{ loan.total_repayments|floatformat:2 }}</td>
                     <td>{{ loan.get_status_display }}</td>
                     <td>
                         <a href="{% url 'loans:loan_detail' loan.pk %}" class="btn btn-outline-info btn-sm" title="View Details" aria-label="View {{ loan.id }}">
