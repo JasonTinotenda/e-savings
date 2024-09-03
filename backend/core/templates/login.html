@@ -20,13 +20,22 @@
 
         .form-signin {
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
+            max-width: 400px;
+            margin: auto;
+            margin-top: 5vh; /* Margin at the top to centralize vertically */
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .form-signin:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
 
         .form-floating {
             margin-bottom: 1.5rem;
+            position: relative;
         }
 
         .form-floating label {
@@ -34,50 +43,70 @@
             color: #6c757d;
         }
 
+        .form-floating input {
+            padding-left: 2.75rem;
+        }
+
+        .form-floating .material-icons {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #007bff;
+        }
+
         .btn-primary {
             background-color: #007bff;
             border-color: #007bff;
-            transition: background-color 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
         }
 
         .btn-primary:hover {
             background-color: #0056b3;
             border-color: #004085;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:focus, .btn-primary:active {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
 
         .text-body-secondary {
             color: #6c757d;
         }
 
-        .material-icons {
-            vertical-align: middle;
-            margin-right: 8px;
+        .text-center p {
+            font-size: 0.875rem;
             color: #6c757d;
+        }
+
+        .form-floating input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
     </style>
 </head>
 
-<body class="d-flex align-items-center py-4 bg-body-tertiary">
-    <main class="form-signin w-100 m-auto">
+<body class="d-flex align-items-center justify-content-center min-vh-100 bg-body-tertiary">
+    <main class="form-signin">
         <form method="POST">
             {% csrf_token %}
-            <h1 class="h3 mb-3 fw-normal text-center">Please sign in</h1>
+            <h1 class="h3 mb-4 fw-bold text-center">Sign In</h1>
             
             <div class="form-floating position-relative">
-                <span class="material-icons position-absolute">person</span>
+                <span class="material-icons">person</span>
                 {{ form.username|as_crispy_field }}
-                <label for="floatingInput">Username</label>
             </div>
             
             <div class="form-floating position-relative">
-                <span class="material-icons position-absolute">lock</span>
+                <span class="material-icons">lock</span>
                 {{ form.password|as_crispy_field }}
-                <label for="floatingPassword">Password</label>
             </div>
             
-            <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+            <button class="btn btn-primary w-100 py-2" type="submit">Sign In</button>
             
-            <p class="mt-5 mb-3 text-body-secondary text-center">© sirJason</p>
+            <p class="mt-4 mb-0 text-body-secondary text-center">© {{ current_year }} sirJason</p>
         </form>
     </main>
 </body>
