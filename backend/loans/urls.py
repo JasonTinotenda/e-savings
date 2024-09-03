@@ -19,9 +19,9 @@ urlpatterns = [
     path('loans/<int:pk>/delete/', views.LoanDeleteView.as_view(), name='loan_delete'),
 
     # LoanRepayment URLs
-    path('repayments/', views.LoanRepaymentListView.as_view(), name='loanrepayment_list'),
-    path('repayments/<int:pk>/', views.LoanRepaymentDetailView.as_view(), name='loanrepayment_detail'),
     path('repayments/create/', views.LoanRepaymentCreateView.as_view(), name='loanrepayment_create'),
     path('repayments/<int:pk>/update/', views.LoanRepaymentUpdateView.as_view(), name='loanrepayment_update'),
     path('repayments/<int:pk>/delete/', views.LoanRepaymentDeleteView.as_view(), name='loanrepayment_delete'),
+    path('repayments/<int:pk>/', views.LoanRepaymentDetailView.as_view(), name='loanrepayment_detail'),
+    path('repayments/', views.LoanRepaymentListView.as_view(), name='loanrepayment_list'),
 ]

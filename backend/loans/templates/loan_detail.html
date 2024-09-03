@@ -25,8 +25,6 @@
                 <li class="list-group-item"><strong>Status:</strong> {{ loan.get_status_display }}</li>
                 <li class="list-group-item"><strong>Start Date:</strong> {{ loan.start_date|date:"F j, Y" }}</li>
                 <li class="list-group-item"><strong>End Date:</strong> {{ loan.end_date|date:"F j, Y" }}</li>
-                <li class="list-group-item"><strong>Created At:</strong> {{ loan.created_at|date:"F j, Y H:i" }}</li>
-                <li class="list-group-item"><strong>Updated At:</strong> {{ loan.updated_at|date:"F j, Y H:i" }}</li>
             </ul>
 
             <h2 class="mt-5">Repayments</h2>
@@ -40,6 +38,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Amount</th>
+                            <th>Repaid</th>
+                            <th>Status</th>
                             <th>Date</th>
                             <th>Actions</th>
                         </tr>
@@ -47,8 +47,10 @@
                     <tbody>
                         {% for repayment in loan.repayments.all %}
                         <tr>
-                            <td><a href="{% url 'loans:loanrepayment_detail' repayment.pk %}">#{{ repayment.id }}</a></td>
+                            <td><a href="{% url 'loans:loanrepayment_update' repayment.pk %}">#{{ repayment.id }}</a></td>
                             <td>${{ repayment.amount|floatformat:2 }}</td>
+                            <td>${{ repayment.amount_paid|floatformat:2 }}</td>
+                            <td>{{ repayment.status }}</td>
                             <td>{{ repayment.date|date:"F j, Y" }}</td>
                             <td>
                                 <a href="{% url 'loans:loanrepayment_update' repayment.pk %}" class="btn btn-outline-warning btn-sm me-1" title="Edit Repayment">
