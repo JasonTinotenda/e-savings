@@ -11,4 +11,3 @@ urlpatterns = [
     path('account/<int:pk>/', DetailedAccountReportView.as_view(), name='detailed_account_report'),
     path('loan/<int:pk>/', DetailedLoanReportView.as_view(), name='detailed_loan_report'),
 ]
-

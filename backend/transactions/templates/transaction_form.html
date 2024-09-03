@@ -38,9 +38,9 @@
                 <!-- Buttons for Submit and Cancel -->
                 <div class="d-flex justify-content-between mt-4">
                     <button type="submit" class="btn btn-primary btn-lg" style="flex: 1; max-width: 200px;">
-                        <i class="material-icons align-middle">save</i> {{ form.instance.pk|yesno:"Update,Create" }}
+                        <i class="material-icons align-middle">save</i> {% if form.instance.pk %}Update{% else %}Create{% endif %}
                     </button>
-                    <a href="{% url 'transactions:transaction_list' %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
+                    <a href="{% url 'loans:loan_list' %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
                         <i class="material-icons align-middle">arrow_back</i> Cancel
                     </a>
                 </div>

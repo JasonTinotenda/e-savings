@@ -107,7 +107,7 @@ class Loan(models.Model):
                 account=self.account,
                 amount=self.amount,
                 transaction_type="deposit",
-                date=self.start_date,
+                timestamp=self.start_date,
             )
 
             self.create_repayment_schedule()
