@@ -5,6 +5,7 @@ from django.db import models
 # Create your models here.
 logger = logging.getLogger(__name__)
 
+
 class Transaction(models.Model):
     account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, related_name='transactions')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -31,7 +32,7 @@ class Transaction(models.Model):
                 original.update_account_balance(reverse=True)
             except Transaction.DoesNotExist:
                 logger.warning(f"Transaction with id {self.pk} does not exist. Skipping balance reversal.")
-        
+
         # Apply the new transaction's impact on the balance
         self.update_account_balance()
         super(Transaction, self).save(*args, **kwargs)

@@ -22,7 +22,7 @@
                 <li class="list-group-item"><strong>Account:</strong> {{ transaction.account }}</li>
                 <li class="list-group-item"><strong>Amount:</strong> ${{ transaction.amount|floatformat:2 }}</li>
                 <li class="list-group-item"><strong>Description:</strong> {{ transaction.transaction_type }}</li>
-                <li class="list-group-item"><strong>Date:</strong> {{ transaction.date|date:"F j, Y" }}</li>
+                <li class="list-group-item"><strong>Date:</strong> {{ transaction.timestamp|date:"F j, Y" }}</li>
             </ul>
         </div>
         <div class="card-footer d-flex justify-content-between">

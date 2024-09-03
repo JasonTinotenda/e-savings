@@ -43,7 +43,7 @@
                     <td>{{ transaction.account }}</td>
                     <td>{{ transaction.transaction_type }}</td>
                     <td>${{ transaction.amount }}</td>
-                    <td>{{ transaction.date|date:"F j, Y" }}</td>
+                    <td>{{ transaction.timestamp|date:"F j, Y" }}</td>
                     <td>
                         <a href="{% url 'transactions:transaction_detail' transaction.id %}" class="btn btn-outline-info btn-sm" title="View Details" aria-label="View Transaction ID {{ transaction.id }}">
                             <i class="material-icons">visibility</i>
