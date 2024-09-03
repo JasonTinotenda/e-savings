@@ -31,7 +31,7 @@
                 {% for account in accounts %}
                 <tr class="align-middle text-center">
                     <td>{{ account.account_number }}</td>
-                    <td>{{ account.person.full_name }}</td>
+                    <td>{{ account.person.first_name}} {{account.person.last_name}}</td>
                     <td>{{ account.balance|floatformat:2 }}</td>
                     <td>{{ account.interest_rate }}%</td>
                     <td>
