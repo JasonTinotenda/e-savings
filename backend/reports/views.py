@@ -4,7 +4,7 @@ from django.db.models import Sum
 from accounts.models import Account
 from core.views import BaseLoggedInView
 from transactions.models import Transaction
-from loans.models import Loan 
+from loans.models import Loan
 
 class ReportView(BaseLoggedInView, View):
     template_name = 'report.html'

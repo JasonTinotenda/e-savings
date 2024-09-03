@@ -1,0 +1,21 @@
+[flake8]
+black-config = .black
+ignore = DOC301, E203, W503, G004
+per-file-ignores =
+    __init__.py: D104
+    cli.py: D205, D301
+max-line-length = 124
+max-complexity = 10
+count = True
+statistics = True
+show-source = True
+exclude =
+    .github
+    .env
+    .git
+    .astro
+    .pytest_cache
+    .venv
+    venv
+    build
+    dist
