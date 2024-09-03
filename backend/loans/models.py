@@ -1,4 +1,7 @@
 import decimal
+from datetime import datetime
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from datetime import timedelta
 from django.db import models
 from django.utils import timezone
@@ -41,7 +44,7 @@ class Loan(models.Model):
     loan_type = models.ForeignKey(LoanType, on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     interest_rate = models.DecimalField(max_digits=5, decimal_places=2, editable=False)
-    start_date = models.DateField(default=timezone.now, editable=False)
+    start_date = models.DateField(default=timezone.now)
     end_date = models.DateField(editable=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -50,7 +53,33 @@ class Loan(models.Model):
         max_digits=10, decimal_places=2, default=0.00
     )
 
+    def create_repayment_schedule(self):
+        """Creates LoanRepayment instances for each month."""
+        term_length = int(self.get_term_length())
+        repayment_amount = self.total_repayments / term_length
+        for i in range(term_length):
+            due_date = self.start_date + timedelta(days=(i + 1) * 30)
+
+            LoanRepayment.objects.create(
+                loan=self,
+                amount=repayment_amount,
+                date=due_date
+            )
+
+    def recalculate_repayment_schedule(self):
+        """Clears existing LoanRepayment records and creates a new repayment schedule."""
+        self.repayments.all().delete()  # Clear existing repayments
+        self.create_repayment_schedule()
+
     def save(self, *args, **kwargs):
+        is_new = self.pk is None  # Check if this is a new instance
+
+        # Load the previous instance to compare fields
+        if not is_new:
+            previous = Loan.objects.get(pk=self.pk)
+        else:
+            previous = None
+
         # Set interest rate based on loan type if not provided
         if not self.interest_rate:
             self.interest_rate = self.loan_type.interest_rate
@@ -64,6 +93,13 @@ class Loan(models.Model):
         # Calculate total repayments
         if not self.total_repayments:
             self.total_repayments = self.calculate_interest() + decimal.Decimal(self.amount)
+            # self.create_repayment_schedule()
+
+        if not is_new and previous.start_date != self.start_date:
+            self.end_date = self.start_date + timedelta(
+                days=self.loan_type.max_term * 30
+            )
+            self.recalculate_repayment_schedule()
 
         # If loan is approved create a transaction
         if self.status == "approved":
@@ -73,6 +109,8 @@ class Loan(models.Model):
                 transaction_type="deposit",
                 date=self.start_date,
             )
+
+            self.create_repayment_schedule()
 
         super().save(*args, **kwargs)
 
@@ -100,24 +138,22 @@ class Loan(models.Model):
 
 # Model representing loan repayment transactions linked to a loan.
 class LoanRepayment(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("due", "Due"),
+        ("defaulted", "Defaulted"),
+        ("repaid", "Repaid"),
+    ]
     loan = models.ForeignKey(Loan, related_name="repayments", on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(default=timezone.now)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def save(self, *args, **kwargs):
-        # Deduct repayment amount from loan and update status if fully repaid
-        self.loan.amount -= self.amount
-        if self.loan.amount <= 0:
-            self.loan.status = "repaid"
-        self.loan.save()
 
-        # Log the repayment action
-        # AuditLog.objects.create(
-        #     account=self.loan.account,
-        #     action="update",
-        #     model_name="LoanRepayment",
-        #     model_id=self.id,  # Ensure this is populated
-        # )
+        if self.date <= timezone.now().date():
+            self.status = "due"
 
         super().save(*args, **kwargs)
 

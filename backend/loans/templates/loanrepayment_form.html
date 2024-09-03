@@ -19,12 +19,22 @@
                 <!-- Repayment Form Fields -->
                 <div class="mb-2">
                     <label for="id_repayment_amount" class="form-label">Repayment Amount</label>
-                    {{ form.repayment_amount|as_crispy_field }}
+                    {{ form.amount|as_crispy_field }}
+                </div>
+
+                <div class="mb-2">
+                    <label for="id_repayment_paid" class="form-label">Paid Amount</label>
+                    {{ form.amount_paid|as_crispy_field }}
+                </div>
+
+                <div class="mb-2">
+                    <label for="id_repayment_status" class="form-label">Repayment Status</label>
+                    {{ form.status|as_crispy_field }}
                 </div>
                 
                 <div class="mb-2">
                     <label for="id_repayment_date" class="form-label">Repayment Date</label>
-                    {{ form.repayment_date|as_crispy_field }}
+                    {{ form.date|as_crispy_field }}
                 </div>
 
                 <!-- Buttons for Submit and Cancel -->
@@ -32,7 +42,7 @@
                     <button type="submit" class="btn btn-primary btn-lg" style="flex: 1; max-width: 200px;">
                         <i class="material-icons align-middle">save</i> {% if form.instance.pk %}Update{% else %}Create{% endif %}
                     </button>
-                    <a href="{% url 'loans:loanrepayment_list' %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
+                    <a href="{% url 'loans:loan_detail' form.instance.loan.pk %}" class="btn btn-outline-secondary btn-lg" style="flex: 1; max-width: 200px;">
                         <i class="material-icons align-middle">arrow_back</i> Cancel
                     </a>
                 </div>
